@@ -1,0 +1,28 @@
+D:\MOFO Server\MOFO\MOFO.Services\bin\Debug\MOFO.Services.dll
+D:\MOFO Server\MOFO\MOFO.Services\bin\Debug\MOFO.Services.pdb
+D:\MOFO Server\MOFO\MOFO.Services\bin\Debug\MOFO.Database.dll
+D:\MOFO Server\MOFO\MOFO.Services\bin\Debug\MOFO.Models.dll
+D:\MOFO Server\MOFO\MOFO.Services\bin\Debug\EntityFramework.dll
+D:\MOFO Server\MOFO\MOFO.Services\bin\Debug\MOFO.Database.pdb
+D:\MOFO Server\MOFO\MOFO.Services\bin\Debug\MOFO.Database.dll.config
+D:\MOFO Server\MOFO\MOFO.Services\bin\Debug\MOFO.Models.pdb
+D:\MOFO Server\MOFO\MOFO.Services\bin\Debug\EntityFramework.xml
+D:\MOFO Server\MOFO\MOFO.Services\obj\Debug\MOFO.Services.csprojAssemblyReference.cache
+D:\MOFO Server\MOFO\MOFO.Services\obj\Debug\MOFO.Services.csproj.CoreCompileInputs.cache
+D:\MOFO Server\MOFO\MOFO.Services\obj\Debug\MOFO.Services.csproj.CopyComplete
+D:\MOFO Server\MOFO\MOFO.Services\obj\Debug\MOFO.Services.dll
+D:\MOFO Server\MOFO\MOFO.Services\obj\Debug\MOFO.Services.pdb
+D:\MOFO\MOFO\MOFO.Services\bin\Debug\MOFO.Services.dll
+D:\MOFO\MOFO\MOFO.Services\bin\Debug\MOFO.Services.pdb
+D:\MOFO\MOFO\MOFO.Services\bin\Debug\MOFO.Database.dll
+D:\MOFO\MOFO\MOFO.Services\bin\Debug\MOFO.Models.dll
+D:\MOFO\MOFO\MOFO.Services\bin\Debug\EntityFramework.dll
+D:\MOFO\MOFO\MOFO.Services\bin\Debug\MOFO.Database.pdb
+D:\MOFO\MOFO\MOFO.Services\bin\Debug\MOFO.Database.dll.config
+D:\MOFO\MOFO\MOFO.Services\bin\Debug\MOFO.Models.pdb
+D:\MOFO\MOFO\MOFO.Services\bin\Debug\EntityFramework.xml
+D:\MOFO\MOFO\MOFO.Services\obj\Debug\MOFO.Services.csprojAssemblyReference.cache
+D:\MOFO\MOFO\MOFO.Services\obj\Debug\MOFO.Services.csproj.CoreCompileInputs.cache
+D:\MOFO\MOFO\MOFO.Services\obj\Debug\MOFO.Services.csproj.CopyComplete
+D:\MOFO\MOFO\MOFO.Services\obj\Debug\MOFO.Services.dll
+D:\MOFO\MOFO\MOFO.Services\obj\Debug\MOFO.Services.pdb

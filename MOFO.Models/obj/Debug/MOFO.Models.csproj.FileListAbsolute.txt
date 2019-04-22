@@ -1,0 +1,12 @@
+D:\MOFO Server\MOFO\MOFO.Models\bin\Debug\MOFO.Models.dll
+D:\MOFO Server\MOFO\MOFO.Models\bin\Debug\MOFO.Models.pdb
+D:\MOFO Server\MOFO\MOFO.Models\obj\Debug\MOFO.Models.csprojAssemblyReference.cache
+D:\MOFO Server\MOFO\MOFO.Models\obj\Debug\MOFO.Models.csproj.CoreCompileInputs.cache
+D:\MOFO Server\MOFO\MOFO.Models\obj\Debug\MOFO.Models.dll
+D:\MOFO Server\MOFO\MOFO.Models\obj\Debug\MOFO.Models.pdb
+D:\MOFO\MOFO\MOFO.Models\bin\Debug\MOFO.Models.dll
+D:\MOFO\MOFO\MOFO.Models\bin\Debug\MOFO.Models.pdb
+D:\MOFO\MOFO\MOFO.Models\obj\Debug\MOFO.Models.csprojAssemblyReference.cache
+D:\MOFO\MOFO\MOFO.Models\obj\Debug\MOFO.Models.csproj.CoreCompileInputs.cache
+D:\MOFO\MOFO\MOFO.Models\obj\Debug\MOFO.Models.dll
+D:\MOFO\MOFO\MOFO.Models\obj\Debug\MOFO.Models.pdb

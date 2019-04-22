@@ -1,0 +1,28 @@
+D:\MOFO Server\MOFO\MOFO.Database\bin\Debug\MOFO.Database.dll.config
+D:\MOFO Server\MOFO\MOFO.Database\bin\Debug\MOFO.Database.dll
+D:\MOFO Server\MOFO\MOFO.Database\bin\Debug\MOFO.Database.pdb
+D:\MOFO Server\MOFO\MOFO.Database\bin\Debug\EntityFramework.dll
+D:\MOFO Server\MOFO\MOFO.Database\bin\Debug\EntityFramework.SqlServer.dll
+D:\MOFO Server\MOFO\MOFO.Database\bin\Debug\EntityFramework.xml
+D:\MOFO Server\MOFO\MOFO.Database\bin\Debug\EntityFramework.SqlServer.xml
+D:\MOFO Server\MOFO\MOFO.Database\obj\Debug\MOFO.Database.csprojAssemblyReference.cache
+D:\MOFO Server\MOFO\MOFO.Database\obj\Debug\MOFO.Database.csproj.CoreCompileInputs.cache
+D:\MOFO Server\MOFO\MOFO.Database\obj\Debug\MOFO.Database.csproj.CopyComplete
+D:\MOFO Server\MOFO\MOFO.Database\obj\Debug\MOFO.Database.dll
+D:\MOFO Server\MOFO\MOFO.Database\obj\Debug\MOFO.Database.pdb
+D:\MOFO Server\MOFO\MOFO.Database\bin\Debug\MOFO.Models.dll
+D:\MOFO Server\MOFO\MOFO.Database\bin\Debug\MOFO.Models.pdb
+D:\MOFO\MOFO\MOFO.Database\bin\Debug\MOFO.Database.dll.config
+D:\MOFO\MOFO\MOFO.Database\bin\Debug\MOFO.Database.dll
+D:\MOFO\MOFO\MOFO.Database\bin\Debug\MOFO.Database.pdb
+D:\MOFO\MOFO\MOFO.Database\bin\Debug\EntityFramework.dll
+D:\MOFO\MOFO\MOFO.Database\bin\Debug\EntityFramework.SqlServer.dll
+D:\MOFO\MOFO\MOFO.Database\bin\Debug\MOFO.Models.dll
+D:\MOFO\MOFO\MOFO.Database\bin\Debug\MOFO.Models.pdb
+D:\MOFO\MOFO\MOFO.Database\bin\Debug\EntityFramework.xml
+D:\MOFO\MOFO\MOFO.Database\bin\Debug\EntityFramework.SqlServer.xml
+D:\MOFO\MOFO\MOFO.Database\obj\Debug\MOFO.Database.csprojAssemblyReference.cache
+D:\MOFO\MOFO\MOFO.Database\obj\Debug\MOFO.Database.csproj.CoreCompileInputs.cache
+D:\MOFO\MOFO\MOFO.Database\obj\Debug\MOFO.Database.csproj.CopyComplete
+D:\MOFO\MOFO\MOFO.Database\obj\Debug\MOFO.Database.dll
+D:\MOFO\MOFO\MOFO.Database\obj\Debug\MOFO.Database.pdb
