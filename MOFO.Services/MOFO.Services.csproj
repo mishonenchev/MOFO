@@ -42,10 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\IFileService.cs" />
+    <Compile Include="Contracts\ISessionService.cs" />
     <Compile Include="Contracts\IUserService.cs" />
     <Compile Include="Contracts\IRoomService.cs" />
     <Compile Include="FileService.cs" />
     <Compile Include="RoomService.cs" />
+    <Compile Include="SessionService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

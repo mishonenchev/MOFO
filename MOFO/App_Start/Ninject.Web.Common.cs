@@ -101,6 +101,10 @@ namespace MOFO.App_Start
                 .Bind<IFileService>()
                 .To<FileService>()
            .InRequestScope();
+            kernel
+                .Bind<ISessionService>()
+                .To<SessionService>()
+           .InRequestScope();
         }        
     }
 }

@@ -1,0 +1,14 @@
+D:\MOFO\MOFO\MOFO.Database\bin\Release\MOFO.Database.dll.config
+D:\MOFO\MOFO\MOFO.Database\bin\Release\MOFO.Database.dll
+D:\MOFO\MOFO\MOFO.Database\bin\Release\MOFO.Database.pdb
+D:\MOFO\MOFO\MOFO.Database\bin\Release\EntityFramework.dll
+D:\MOFO\MOFO\MOFO.Database\bin\Release\EntityFramework.SqlServer.dll
+D:\MOFO\MOFO\MOFO.Database\bin\Release\MOFO.Models.dll
+D:\MOFO\MOFO\MOFO.Database\bin\Release\MOFO.Models.pdb
+D:\MOFO\MOFO\MOFO.Database\bin\Release\EntityFramework.xml
+D:\MOFO\MOFO\MOFO.Database\bin\Release\EntityFramework.SqlServer.xml
+D:\MOFO\MOFO\MOFO.Database\obj\Release\MOFO.Database.csprojAssemblyReference.cache
+D:\MOFO\MOFO\MOFO.Database\obj\Release\MOFO.Database.csproj.CoreCompileInputs.cache
+D:\MOFO\MOFO\MOFO.Database\obj\Release\MOFO.Database.csproj.CopyComplete
+D:\MOFO\MOFO\MOFO.Database\obj\Release\MOFO.Database.dll
+D:\MOFO\MOFO\MOFO.Database\obj\Release\MOFO.Database.pdb

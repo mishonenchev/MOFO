@@ -10,7 +10,5 @@ namespace MOFO.Services.Contracts
     public interface IRoomService
     {
         Room GetRoomByDeskCode(string deskCode);
-        bool HasActiveSessionByRoom(int roomId);
-        void AddSession(Session session);
     }
 }

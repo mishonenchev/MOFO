@@ -21,7 +21,7 @@ namespace MOFO.Controllers
         {
             var auth = _userService.NewAuthString();
             _userService.AddUser(new User() { Name = name, Auth = auth, Role = UserRole.Student, IsActive = true, DateTimeLastActive = DateTime.Now });
-            return Json(new { auth = auth, status = "OK" }, JsonRequestBehavior.AllowGet);
+            return Json(new { status = "OK", auth = auth }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public JsonResult GetAccountInfo(string auth)
@@ -40,6 +40,7 @@ namespace MOFO.Controllers
             if (user != null)
             {
                 user.Name = name;
+                _userService.Update();
                 return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
             }
             else return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);

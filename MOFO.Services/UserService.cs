@@ -32,7 +32,7 @@ namespace MOFO.Services
         }
         public List<User> GetAll()
         {
-            return _userRepository.WhereIncludeAll(x => x.Id > 0).ToList();
+            return _userRepository.GetAll().ToList();
         }
         public string NewAuthString()
         {

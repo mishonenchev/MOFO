@@ -1,0 +1,6 @@
+D:\MOFO\MOFO\MOFO.Models\bin\Release\MOFO.Models.dll
+D:\MOFO\MOFO\MOFO.Models\bin\Release\MOFO.Models.pdb
+D:\MOFO\MOFO\MOFO.Models\obj\Release\MOFO.Models.csprojAssemblyReference.cache
+D:\MOFO\MOFO\MOFO.Models\obj\Release\MOFO.Models.csproj.CoreCompileInputs.cache
+D:\MOFO\MOFO\MOFO.Models\obj\Release\MOFO.Models.dll
+D:\MOFO\MOFO\MOFO.Models\obj\Release\MOFO.Models.pdb

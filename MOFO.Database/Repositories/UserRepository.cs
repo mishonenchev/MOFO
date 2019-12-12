@@ -17,7 +17,7 @@ namespace MOFO.Database.Repositories
         }
         public IEnumerable<User> WhereIncludeAll(Expression<Func<User, bool>> where)
         {
-            return Where(where, x=>x.Session).AsEnumerable();
+            return _dbSet.Where(where).Include(x => x.Session.Files).Include(x => x.Session.Room.Desks).ToList();
         }
     }
 }

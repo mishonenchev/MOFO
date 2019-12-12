@@ -12,24 +12,13 @@ namespace MOFO.Services
     public class RoomService: IRoomService
     {
         private readonly IRoomRepository _roomRepository;
-        private readonly ISessionRepository _sessionRepository;
-        public RoomService(IRoomRepository roomRepository, ISessionRepository sessionRepository)
+        public RoomService(IRoomRepository roomRepository)
         {
             _roomRepository = roomRepository;
-            _sessionRepository = sessionRepository;
         }
         public Room GetRoomByDeskCode(string deskCode)
         {
-            return _roomRepository.Where(x => x.Desks.Any(y => y.Code == deskCode) == true, x=>x.Desks).FirstOrDefault();
-        }
-        public bool HasActiveSessionByRoom(int roomId)
-        {
-            return _sessionRepository.Where(x => x.Room.Id == roomId).FirstOrDefault() != null;
-        }
-        public void AddSession(Session session)
-        {
-            _sessionRepository.Add(session);
-            _sessionRepository.SaveChanges();
+            return _roomRepository.WhereIncludeAll(x => x.Desks.Any(y => y.Code == deskCode) == true).FirstOrDefault();
         }
     }
 }
