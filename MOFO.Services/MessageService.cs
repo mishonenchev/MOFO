@@ -9,16 +9,22 @@ using System.Threading.Tasks;
 
 namespace MOFO.Services
 {
-    public class FileService: IFileService
+    public class MessageService: IMessageService
     {
         private readonly IFileRepository _fileRepository;
-        public FileService(IFileRepository fileRepository)
+        private readonly IMessageRepository _messageRepository;
+        public MessageService(IFileRepository fileRepository, IMessageRepository messageRepository)
         {
             _fileRepository = fileRepository;
+            _messageRepository = messageRepository;
         }
-        public void Remove(File file)
+        public void Remove(Message message)
         {
-            _fileRepository.Remove(file);
+            if (message.File != null)
+            {
+                _fileRepository.Remove(message.File);
+            }
+            _messageRepository.Remove(message);
             _fileRepository.SaveChanges();
         }
         public string NewDownloadCode()
@@ -40,9 +46,9 @@ namespace MOFO.Services
         {
             return _fileRepository.Where(x => x.DownloadCode == downloadCode).FirstOrDefault();
         }
-        public IEnumerable<File> GetFilesByUserSession(Session session)
+        public IEnumerable<Message> GetMessagesByUserSession(Session session)
         {
-            return _fileRepository.WhereIncludeAll(x => x.User.Session.Id == session.Id).ToList();
+            return _messageRepository.WhereIncludeAll(x => x.User.Session.Id == session.Id).ToList();
         }
     }
 }

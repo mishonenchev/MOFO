@@ -2,14 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MOFO.Database.Contracts
 {
-    public interface IDeskRepository: IBaseRepository<Desk>
+    public interface IMessageRepository : IBaseRepository<Message>
     {
-        IEnumerable<Desk> WhereIncludeAll(Expression<Func<Desk, bool>> where);
+        IEnumerable<Message> WhereIncludeAll(System.Linq.Expressions.Expression<Func<Message, bool>> where);
     }
 }

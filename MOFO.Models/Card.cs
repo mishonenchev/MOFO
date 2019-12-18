@@ -7,16 +7,15 @@ using System.Threading.Tasks;
 
 namespace MOFO.Models
 {
-    public class Room
+    public class Card
     {
-        public Room()
-        {
-            Cards = new List<Card>();
-        }
         [Key]
         public int Id { get; set; }
-        public string Name{ get; set; }
-        public ICollection<Card> Cards { get; set; }
+        public string Code { get; set; }
+        public UserRole Role { get; set; }
+        public User User { get; set; }
         public School School { get; set; }
+        public string QRCode { get; set; }
+        public DateTime ValidBefore { get; set; }
     }
 }

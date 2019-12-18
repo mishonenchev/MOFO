@@ -78,8 +78,8 @@ namespace MOFO.App_Start
                 .To<FileRepository>()
             .InRequestScope();
             kernel
-                .Bind<IDeskRepository>()
-                .To<DeskRepository>()
+                .Bind<ICardRepository>()
+                .To<CardRepository>()
             .InRequestScope();
             kernel
                 .Bind<IRoomRepository>()
@@ -90,6 +90,30 @@ namespace MOFO.App_Start
                .To<SessionRepository>()
            .InRequestScope();
             kernel
+              .Bind<ISessionHistoryRepository>()
+              .To<SessionHistoryRepository>()
+          .InRequestScope();
+            kernel
+             .Bind<ITeacherRepository>()
+             .To<TeacherRepository>()
+         .InRequestScope();
+            kernel
+             .Bind<IModeratorRepository>()
+             .To<ModeratorRepository>()
+         .InRequestScope();
+            kernel
+             .Bind<ISchoolRepository>()
+             .To<SchoolRepository>()
+         .InRequestScope();
+            kernel
+             .Bind<IStudentRepository>()
+             .To<StudentRepository>()
+         .InRequestScope();
+            kernel
+           .Bind<IMessageRepository>()
+           .To<MessageRepository>()
+         .InRequestScope();
+            kernel
                 .Bind<IUserService>()
                 .To<UserService>()
            .InRequestScope();
@@ -98,12 +122,24 @@ namespace MOFO.App_Start
                 .To<RoomService>()
            .InRequestScope();
             kernel
-                .Bind<IFileService>()
-                .To<FileService>()
+                .Bind<IMessageService>()
+                .To<MessageService>()
            .InRequestScope();
             kernel
                 .Bind<ISessionService>()
                 .To<SessionService>()
+           .InRequestScope();
+            kernel
+                 .Bind<ISchoolService>()
+                 .To<SchoolService>()
+            .InRequestScope();
+            kernel
+                .Bind<ICardService>()
+                .To<CardService>()
+           .InRequestScope();
+            kernel
+                .Bind<IModeratorService>()
+                .To<ModeratorService>()
            .InRequestScope();
         }        
     }

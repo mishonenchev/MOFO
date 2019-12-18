@@ -20,7 +20,7 @@ namespace MOFO.Controllers
         public JsonResult RegisterUser(string name)
         {
             var auth = _userService.NewAuthString();
-            _userService.AddUser(new User() { Name = name, Auth = auth, Role = UserRole.Student, IsActive = true, DateTimeLastActive = DateTime.Now });
+            _userService.AddUser(new User() { Name = name, Auth = auth, Role = UserRole.Student, IsActive = true, DateTimeLastActive = DateTime.Now, DateTimeRegistered = DateTime.Now });
             return Json(new { status = "OK", auth = auth }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]

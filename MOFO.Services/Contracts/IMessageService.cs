@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace MOFO.Services.Contracts
 {
-    public interface IFileService
+    public interface IMessageService
     {
-        void Remove(File file);
+        void Remove(Message message);
         string NewDownloadCode();
         File GetFileByDownloadCode(string downloadCode);
-        IEnumerable<File> GetFilesByUserSession(Session session);
+        IEnumerable<Message> GetMessagesByUserSession(Session session);
     }
 }

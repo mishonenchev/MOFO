@@ -28,7 +28,7 @@ namespace MOFO.Controllers
             {
                 if (room != null)
                 {
-                    var deskInRoom = room.Desks.Where(x => x.Code == deskCode).First();
+                    var deskInRoom = room.Cards.Where(x => x.Code == deskCode).First();
                     if (!_sessionService.HasActiveSessionByRoom(room))
                     {
                         _sessionService.AddSession(new Session()
@@ -44,7 +44,7 @@ namespace MOFO.Controllers
                         previousUser.Session = null;
                     }
                     user.Session = _sessionService.GetSessionByRoom(room);
-                    room.Desks.Where(x => x.User != null && x.User.Id == user.Id).ToList().ForEach(y => y.User = null);
+                    room.Cards.Where(x => x.User != null && x.User.Id == user.Id).ToList().ForEach(y => y.User = null);
                     deskInRoom.User = user;
                     _userService.Update();
                     return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
@@ -100,7 +100,7 @@ namespace MOFO.Controllers
                 if (user.Session != null)
                 {
                     var userSession = user.Session;
-                    var activeDesks = userSession.Room.Desks.Where(x => x.User != null);
+                    var activeDesks = userSession.Room.Cards.Where(x => x.User != null);
                     var usersCount = activeDesks.Where(x => x.User.Session.Id == userSession.Id).ToList().Count;
                     if (usersCount > 1)
                     {

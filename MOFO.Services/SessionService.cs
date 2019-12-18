@@ -9,16 +9,22 @@ using System.Threading.Tasks;
 
 namespace MOFO.Services
 {
+    //session service history 
     public class SessionService : ISessionService
     {
         private readonly ISessionRepository _sessionRepository;
         private readonly IUserRepository _userRepository; 
-        private readonly IFileService _fileService;
-        public SessionService(ISessionRepository sessionRepository, IFileService fileService, IUserRepository userRepository )
+        private readonly IMessageService _messageService;
+        private readonly IFileRepository _fileRepository;
+        private readonly IMessageRepository _messageRepository;
+        public SessionService(ISessionRepository sessionRepository, IMessageService fileService, IUserRepository userRepository, IFileRepository fileRepository, IMessageRepository messageRepository)
         {
             _sessionRepository = sessionRepository;
-            _fileService = fileService;
+            _messageService = fileService;
             _userRepository = userRepository;
+            _fileRepository = fileRepository;
+            _messageRepository = messageRepository;
+
         }
         public bool HasActiveSessionByRoom(Room room)
         {
@@ -28,18 +34,27 @@ namespace MOFO.Services
         {
             return _sessionRepository.Where(x => x.Room.Id == room.Id, x=>x.Room).FirstOrDefault();
         }
-        public void AddFile(int type, string fileName, string downloadCode, string message, User user, DateTime dateTimeUploaded)
+        public void AddMessage(int type, string fileName, string downloadCode, string message, User user, DateTime dateTimeUploaded)
         {
             var session = user.Session;
-            session.Files.Add(new File()
+            var messageObj = new Message()
             {
-                Type = (Models.Type)type,
-                FileName = fileName,
-                DownloadCode = downloadCode,
-                Message = message,
+                Text = message,
                 User = user,
                 DateTimeUploaded = dateTimeUploaded
-            });
+            };
+            if (!string.IsNullOrEmpty(fileName))
+            {
+                messageObj.File = new File()
+                {
+                    DownloadCode = downloadCode,
+                    DateTimeUploaded = dateTimeUploaded,
+                    FileName = fileName
+                };
+                _fileRepository.Add(messageObj.File);
+                _fileRepository.SaveChanges();
+            }
+            _messageRepository.Add(messageObj);
             _sessionRepository.SaveChanges();
         }
         public void AddSession(Session session)
@@ -49,9 +64,9 @@ namespace MOFO.Services
         }
         public void RemoveSession(Session session)
         {
-            foreach (var file in session.Files.ToList())
+            foreach (var message in session.Messages.ToList())
             {
-                _fileService.Remove(file);
+                _messageService.Remove(message);
             }
             
             _sessionRepository.SaveChanges();

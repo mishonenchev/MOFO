@@ -7,12 +7,19 @@ using System.Threading.Tasks;
 
 namespace MOFO.Models
 {
-    public class File
+   public class Message
     {
         [Key]
         public int Id { get; set; }
-        public string FileName { get; set; }
-        public string DownloadCode { get; set; }
+        public string Text { get; set; }
+        public File File { get; set; }
         public DateTime DateTimeUploaded { get; set; }
+        public User User { get; set; }
+        public MessageType Type { get; set; }
+    }
+    public enum MessageType
+    {
+        file,
+        text
     }
 }

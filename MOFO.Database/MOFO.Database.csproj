@@ -49,20 +49,32 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\IBaseRepository.cs" />
-    <Compile Include="Contracts\IDeskRepository.cs" />
+    <Compile Include="Contracts\ICardRepository.cs" />
     <Compile Include="Contracts\IFileRepository.cs" />
+    <Compile Include="Contracts\IMessageRepository.cs" />
+    <Compile Include="Contracts\IModeratorRepository.cs" />
+    <Compile Include="Contracts\ISchoolRepository.cs" />
+    <Compile Include="Contracts\ISessionHistoryRepository.cs" />
     <Compile Include="Contracts\ISessionRepository.cs" />
     <Compile Include="Contracts\IRoomRepository.cs" />
+    <Compile Include="Contracts\IStudentRepository.cs" />
+    <Compile Include="Contracts\ITeacherRepository.cs" />
     <Compile Include="Contracts\IUserRepository.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="IDatabase.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
-    <Compile Include="Repositories\DeskRepository.cs" />
+    <Compile Include="Repositories\CardRepository.cs" />
     <Compile Include="Repositories\FileRepository.cs" />
+    <Compile Include="Repositories\MessageRepository.cs" />
+    <Compile Include="Repositories\ModeratorRepository.cs" />
     <Compile Include="Repositories\RoomRepository.cs" />
+    <Compile Include="Repositories\SchoolRepository.cs" />
+    <Compile Include="Repositories\SessionHistoryRepository.cs" />
     <Compile Include="Repositories\SessionRepository.cs" />
+    <Compile Include="Repositories\StudentRepository.cs" />
+    <Compile Include="Repositories\TeacherRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>

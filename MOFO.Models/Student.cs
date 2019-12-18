@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace MOFO.Models
 {
-    public class Desk
+    public class Student
     {
         [Key]
         public int Id { get; set; }
-        public string Code { get; set; }
-        public UserRole Role { get; set; }
         public User User { get; set; }
+        public DateTime RegisterDateTime { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace MOFO.Services
         }
         public Room GetRoomByDeskCode(string deskCode)
         {
-            return _roomRepository.WhereIncludeAll(x => x.Desks.Any(y => y.Code == deskCode) == true).FirstOrDefault();
+            return _roomRepository.WhereIncludeAll(x => x.Cards.Any(y => y.Code == deskCode) == true).FirstOrDefault();
         }
     }
 }

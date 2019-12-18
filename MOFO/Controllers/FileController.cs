@@ -10,12 +10,12 @@ namespace MOFO.Controllers
 {
     public class FileController : Controller
     {
-        private readonly IFileService _fileService;
+        private readonly IMessageService _messageService;
         private readonly IUserService _userService;
         private readonly ISessionService _sessionService;
-        public FileController(IFileService fileService, IUserService userService, ISessionService sessionService)
+        public FileController(IMessageService messageService, IUserService userService, ISessionService sessionService)
         {
-            _fileService = fileService;
+            _messageService = messageService;
             _userService = userService;
             _sessionService = sessionService;
         }
@@ -27,11 +27,12 @@ namespace MOFO.Controllers
             {
                 if (user.Session != null)
                 {
-                    var files = _fileService.GetFilesByUserSession(user.Session);
+                    var messages = _messageService.GetMessagesByUserSession(user.Session);
                     user.DateTimeLastActive = DateTime.Now;
                     user.IsActive = true;
                     _userService.Update();
-                    return Json(new { status = "OK", files = files.Select(x => new { type = x.Type, downloadCode = x.DownloadCode, fileName = x.FileName, message = x.Message, username = x.User.Name, dateTimeUploaded = DateTimeUploaded(x.DateTimeUploaded) }) }, JsonRequestBehavior.AllowGet);
+                    
+                    return Json(new { status = "OK", files = messages.Select(x => new { type = x.Type, downloadCode = x.File?.DownloadCode, fileName = x.File?.FileName, message = x.Text, username = x.User.Name, dateTimeUploaded = DateTimeUploaded(x.DateTimeUploaded) }) }, JsonRequestBehavior.AllowGet);
                 }
                 else return Json(new { status = "NO SESSION" }, JsonRequestBehavior.AllowGet);
             }
@@ -40,7 +41,7 @@ namespace MOFO.Controllers
         [HttpPost]
         public JsonResult UploadFile(int type, string message, string auth)
         {
-            var downloadCode = _fileService.NewDownloadCode();
+            var downloadCode = _messageService.NewDownloadCode();
             var user = _userService.GetUserByAuth(auth);
             if (user != null)
             {
@@ -54,7 +55,7 @@ namespace MOFO.Controllers
                             var fileName = downloadCode + Path.GetExtension(file.FileName);
                             var path = Path.Combine(Server.MapPath("~/Content/Files"), fileName);
                             file.SaveAs(path);
-                            _sessionService.AddFile(type, fileName, downloadCode, message, user, DateTime.Now);
+                            _sessionService.AddMessage(type, fileName, downloadCode, message, user, DateTime.Now);
                             return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
                         }
                         else return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);
@@ -71,16 +72,16 @@ namespace MOFO.Controllers
             var user = _userService.GetUserByAuth(auth);
             if (user != null)
             {
-                var file = _fileService.GetFilesByUserSession(user.Session).Where(x=>x.DownloadCode==downloadCode).FirstOrDefault();
-                if (file != null)
+                var message = _messageService.GetMessagesByUserSession(user.Session).Where(x=>x.File?.DownloadCode==downloadCode).FirstOrDefault();
+                if (message != null)
                 {
                     //var fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/Files/") + file.FileName);
                     //var extension = Path.GetExtension(file.FileName);
                     //return File(fileBytes, MimeMapping.GetMimeMapping(file.FileName), " " + extension);
 
-                    Response.ContentType = MimeMapping.GetMimeMapping(file.FileName);
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + file.FileName);
-                    Response.TransmitFile(Server.MapPath("~/Content/Files/" + file.FileName));
+                    Response.ContentType = MimeMapping.GetMimeMapping(message.File.FileName);
+                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + message.File.FileName);
+                    Response.TransmitFile(Server.MapPath("~/Content/Files/" + message.File.FileName));
                     Response.End();
                     return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
                 }

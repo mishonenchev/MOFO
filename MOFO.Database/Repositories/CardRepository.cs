@@ -10,12 +10,12 @@ using System.Data.Entity;
 
 namespace MOFO.Database.Repositories
 {
-    public class DeskRepository : BaseRepository<Desk>, IDeskRepository
+    public class CardRepository : BaseRepository<Card>, ICardRepository
     {
-        public DeskRepository(IDatabase database) : base(database)
+        public CardRepository(IDatabase database) : base(database)
         {
         }
-        public IEnumerable<Desk> WhereIncludeAll(Expression<Func<Desk, bool>> where)
+        public IEnumerable<Card> WhereIncludeAll(Expression<Func<Card, bool>> where)
         {
             return Where(where, x => x.User).AsEnumerable();
         }

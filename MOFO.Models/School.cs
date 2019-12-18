@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace MOFO.Models
 {
-    public class File
+    public class School
     {
         [Key]
         public int Id { get; set; }
-        public string FileName { get; set; }
-        public string DownloadCode { get; set; }
-        public DateTime DateTimeUploaded { get; set; }
+        public string Name { get; set; }
+        public string City { get; set; }
+        public string Address { get; set; }
+        public string Telephone { get; set; }
     }
 }

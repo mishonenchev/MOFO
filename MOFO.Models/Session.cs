@@ -11,11 +11,11 @@ namespace MOFO.Models
     {
         public Session()
         {
-            Files = new List<File>();
+            Messages = new List<Message>();
         }
         [Key]
         public int Id { get; set; }
-        public ICollection<File> Files { get; set; }
+        public ICollection<Message> Messages { get; set; }
         public Room Room { get; set; }
         public DateTime DateTimeCreated { get; set; }
         public DateTime DateTimeLastActive { get; set; }
