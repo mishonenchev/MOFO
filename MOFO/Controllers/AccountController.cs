@@ -18,11 +18,19 @@ namespace MOFO.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private readonly IModeratorService _moderatorService;
+        private readonly ISchoolService _schoolService;
+        private readonly ITeacherService _teacherService;
+        private readonly IStudentService _studentService;
         private readonly IUserService _userService;
 
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService, IModeratorService moderatorService, ISchoolService schoolService, ITeacherService teacherService, IStudentService studentService)
         {
             _userService = userService;
+            _moderatorService = moderatorService;
+            _schoolService = schoolService;
+            _teacherService = teacherService;
+            _studentService = studentService;
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -156,15 +164,15 @@ namespace MOFO.Controllers
         }
 
         //
-        // POST: /Account/Register
+        // POST: /Account/RegisterStudent
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> RegisterStudent(RegisterStudentViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Name, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -175,7 +183,112 @@ namespace MOFO.Controllers
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    var _user = new User()
+                    {
+                        AspUserId = user.Id,
+                        Name = model.Name,
+                        Email = model.Email,
+                        Auth = _userService.NewAuthString(),
+                        Role = UserRole.Student,
+                        Telephone = model.Telephone,
+                        DateTimeRegistered = DateTime.Now,
+                        DateTimeLastActive = DateTime.Now,
+                        IsActive = true,
+                    };
+                    _userService.AddUser(_user);
+                    _studentService.AddStudent(new Student()
+                    {
+                        RegisterDateTime = DateTime.Now,
+                        User = _user
+                    });
+                    return RedirectToAction("Index", "Home");
+                }
+                AddErrors(result);
+            }
 
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+
+        // POST: /Account/RegisterTeacher
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterTeacher(RegisterTeacherViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Name, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email with this link
+                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    var _user = new User()
+                    {
+                        AspUserId = user.Id,
+                        Name = model.Name,
+                        Email = model.Email,
+                        Auth = _userService.NewAuthString(),
+                        Telephone = model.Telephone,
+                        Role = UserRole.Teacher,
+                        DateTimeRegistered = DateTime.Now,
+                        DateTimeLastActive = DateTime.Now,
+                        IsActive = true
+                    };
+                    _userService.AddUser(_user);
+                    _teacherService.AddTeacher(new Teacher()
+                    {
+                        RegisteredDateTime = DateTime.Now,
+                        IsVerified = false,
+                        User = _user
+                    });
+                    
+                    return RedirectToAction("Index", "Home");
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        // POST: /Account/RegisterSchool
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterSchool(RegisterSchoolViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Name, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email with this link
+                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    _moderatorService.AddModerator(new Moderator()
+                    {
+                        AspUserId = user.Id,
+                        Auth = _moderatorService.NewAuthString(),
+                        Name = model.Name,
+                        Email = model.Email,
+                        Telephone = model.Telephone,
+                        RegisteredDateTime = DateTime.Now,
+                        VerificationDateTime = DateTime.Now,
+                        IsVerified=false
+                    });
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);

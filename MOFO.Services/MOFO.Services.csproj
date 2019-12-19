@@ -48,6 +48,8 @@
     <Compile Include="Contracts\IModeratorService.cs" />
     <Compile Include="Contracts\ISchoolService.cs" />
     <Compile Include="Contracts\ISessionService.cs" />
+    <Compile Include="Contracts\IStudentService.cs" />
+    <Compile Include="Contracts\ITeacherService.cs" />
     <Compile Include="Contracts\IUserService.cs" />
     <Compile Include="Contracts\IRoomService.cs" />
     <Compile Include="MessageService.cs" />
@@ -55,6 +57,8 @@
     <Compile Include="RoomService.cs" />
     <Compile Include="SchoolService.cs" />
     <Compile Include="SessionService.cs" />
+    <Compile Include="StudentService.cs" />
+    <Compile Include="TeacherService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
