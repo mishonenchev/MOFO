@@ -9,7 +9,7 @@ namespace MOFO
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+                        "~/Scripts/jquery-{version}.js", "~/Scripts/knockout.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -21,10 +21,17 @@ namespace MOFO
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js"));
+            bundles.Add(new ScriptBundle("~/main/registerTeacher").Include(
+                     "~/Scripts/app/main/registerTeacherViewModel.js"));
+            bundles.Add(new ScriptBundle("~/main/registerStudent").Include(
+                     "~/Scripts/app/main/registerStudentViewModel.js"));
+            bundles.Add(new ScriptBundle("~/app/inputValidation").Include(
+                     "~/Scripts/inputValidation.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+            bundles.Add(new StyleBundle("~/Content/admin").Include(
+                     "~/Content/Admin.min.css"));
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using MOFO.Database.Contracts;
 using MOFO.Models;
+using MOFO.Services.Addons;
 using MOFO.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MOFO.Services
@@ -48,6 +50,39 @@ namespace MOFO.Services
                 return result;
             }
             else return NewAuthString();
+        }
+        public bool IsTelephoneValid(string telephone)
+        {
+            if (telephone[0] == '0' && (telephone[1] == '8' || telephone[1] == '9'))
+            {
+                return telephone.Length == 10;
+            }
+            else if (telephone[0] == '0' && telephone[1] == '0')
+            {
+                telephone = telephone.Remove(0, 2);
+            }
+            Regex digitsOnly = new Regex(@"[^\d]");
+            var onlyDigitPhone = digitsOnly.Replace(telephone, "");
+
+            var code = "";
+            for (int i = 0; i < onlyDigitPhone.Length - 9; i++)
+            {
+                code += onlyDigitPhone[i];
+            }
+            var barephone = "";
+            for (int i = code.Length; i < onlyDigitPhone.Length; i++)
+            {
+                barephone += onlyDigitPhone[i];
+            }
+            if (TelephoneCountryCodes.IsCodeValid(code))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
         public void Update()
         {
