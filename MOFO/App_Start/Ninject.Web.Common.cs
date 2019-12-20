@@ -141,6 +141,14 @@ namespace MOFO.App_Start
                 .Bind<IModeratorService>()
                 .To<ModeratorService>()
            .InRequestScope();
+            kernel
+               .Bind<ITeacherService>()
+               .To<TeacherService>()
+          .InRequestScope();
+            kernel
+               .Bind<IStudentService>()
+               .To<StudentService>()
+          .InRequestScope();
         }        
     }
 }

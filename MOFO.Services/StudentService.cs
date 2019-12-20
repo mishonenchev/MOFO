@@ -1,5 +1,6 @@
 ﻿using MOFO.Database.Contracts;
 using MOFO.Models;
+using MOFO.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MOFO.Services
 {
-    public class StudentService
+    public class StudentService:IStudentService
     {
         private readonly IStudentRepository _studentRepository;
         public StudentService(IStudentRepository studentRepository)

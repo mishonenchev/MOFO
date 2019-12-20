@@ -86,8 +86,7 @@ function RegisterStudentViewModel() {
         }
     })
     self.checkView = function () {
-        self.firstName.validate();
-        self.lastName.validate();
+        self.name.validate();
         self.telephone.validate();
         self.email.validate();
         if (self.password().length > 5 && self.password.length < 400) {
@@ -101,7 +100,7 @@ function RegisterStudentViewModel() {
             invalid(self.confirmPassword, "Паролите не съвпадат");
         }
 
-        return !self.firstName.isInvalid() && !self.lastName.isInvalid() && !self.telephone.isInvalid() && !self.password.isInvalid() && !self.confirmPassword.isInvalid() && !self.email.isInvalid()
+        return !self.name.isInvalid() && !self.telephone.isInvalid() && !self.password.isInvalid() && !self.confirmPassword.isInvalid() && !self.email.isInvalid()
 
     }
     self.validFields = ko.observableArray();

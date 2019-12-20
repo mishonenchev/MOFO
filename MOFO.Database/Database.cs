@@ -23,6 +23,8 @@ namespace MOFO.Database
         public DbSet<School> Schools { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Moderator> Moderators { get; set; }
+        public DbSet<Student> Students { get; set; }
+
         public void SaveChanges()
         {
             base.SaveChanges();

@@ -79,13 +79,13 @@ namespace MOFO.Models
     public class RegisterSchoolViewModel
     {
         [Required]
-        [EmailAddress]
+        [DataType(DataType.Text)]
         public string Name { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }
         [Required]
-        [EmailAddress]
+        [DataType(DataType.PhoneNumber)]
         public string Telephone { get; set; }
         [Required]
         [DataType(DataType.Password)]
@@ -97,13 +97,13 @@ namespace MOFO.Models
     public class RegisterTeacherViewModel
     {
         [Required]
-        [EmailAddress]
+        [DataType(DataType.Text)]
         public string Name { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }
         [Required]
-        [EmailAddress]
+        [DataType(DataType.PhoneNumber)]
         public string Telephone { get; set; }
         [Required]
         [DataType(DataType.Password)]
@@ -115,13 +115,13 @@ namespace MOFO.Models
     public class RegisterStudentViewModel
     {
         [Required]
-        [EmailAddress]
+        [DataType(DataType.Text)]
         public string Name { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }
         [Required]
-        [EmailAddress]
+        [DataType(DataType.PhoneNumber)]
         public string Telephone { get; set; }
         [Required]
         [DataType(DataType.Password)]

@@ -172,38 +172,46 @@ namespace MOFO.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Name, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if (UserManager.FindByEmail(model.Email) == null)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    if (_userService.IsTelephoneValid(model.Telephone))
+                    {
+                        var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                        var result = await UserManager.CreateAsync(user, model.Password);
+                        if (result.Succeeded)
+                        {
+                            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                    var _user = new User()
-                    {
-                        AspUserId = user.Id,
-                        Name = model.Name,
-                        Email = model.Email,
-                        Auth = _userService.NewAuthString(),
-                        Role = UserRole.Student,
-                        Telephone = model.Telephone,
-                        DateTimeRegistered = DateTime.Now,
-                        DateTimeLastActive = DateTime.Now,
-                        IsActive = true,
-                    };
-                    _userService.AddUser(_user);
-                    _studentService.AddStudent(new Student()
-                    {
-                        RegisterDateTime = DateTime.Now,
-                        User = _user
-                    });
-                    return RedirectToAction("Index", "Home");
+
+                            // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                            // Send an email with this link
+                            // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                            // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                            // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                            var _user = new User()
+                            {
+                                AspUserId = user.Id,
+                                Name = model.Name,
+                                Email = model.Email,
+                                Auth = _userService.NewAuthString(),
+                                Role = UserRole.Student,
+                                Telephone = model.Telephone,
+                                DateTimeRegistered = DateTime.Now,
+                                DateTimeLastActive = DateTime.Now,
+                                IsActive = true,
+                            };
+                            _userService.AddUser(_user);
+                            _studentService.AddStudent(new Student()
+                            {
+                                RegisterDateTime = DateTime.Now,
+                                User = _user
+                            });
+                            return RedirectToAction("Index", "Home");
+                        }
+                        AddErrors(result);
+                    }
                 }
-                AddErrors(result);
+              
             }
 
             // If we got this far, something failed, redisplay form
@@ -246,6 +254,7 @@ namespace MOFO.Controllers
                     _teacherService.AddTeacher(new Teacher()
                     {
                         RegisteredDateTime = DateTime.Now,
+                        VerificationDateTime= DateTime.Now,
                         IsVerified = false,
                         User = _user
                     });
