@@ -11,7 +11,6 @@ namespace MOFO.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Auth { get; set; }
         public string AspUserId { get; set; }
         public School School { get; set; }
         public string Name { get; set; }

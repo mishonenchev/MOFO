@@ -26,24 +26,10 @@ namespace MOFO.Services
             _moderatorRepository.Remove(moderator);
             _moderatorRepository.SaveChanges();
         }
-        public string NewAuthString()
+     
+        public bool IsVerifiedByUserId(string userId)
         {
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var result = "";
-            Random rn = new Random();
-            for (int i = 0; i < 64; i++)
-            {
-                result += chars[rn.Next(0, chars.Length - 1)];
-            }
-            if (_moderatorRepository.Where(x => x.Auth == result).Count() == 0)
-            {
-                return result;
-            }
-            else return NewAuthString();
-        }
-        public Moderator GetModeratorByAuth(Moderator moderator)
-        {
-            return _moderatorRepository.Where(x => x.Auth == moderator.Auth).FirstOrDefault();
+            return _moderatorRepository.Where(x => x.AspUserId == userId).First().IsVerified;
         }
         public List<Moderator> GetAll()
         {

@@ -30,6 +30,10 @@ namespace MOFO.Services
         {
             return _teacherRepository.WhereIncludeAll(x => x.User.Auth == auth).FirstOrDefault();
         }
+        public bool IsVerifiedByUserId(string userId)
+        {
+            return _teacherRepository.Where(x => x.User.AspUserId == userId).First().IsVerified;
+        }
         public List<Teacher> GetAll()
         {
             return _teacherRepository.GetAll().ToList();

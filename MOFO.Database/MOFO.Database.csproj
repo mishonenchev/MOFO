@@ -48,8 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CityRepository.cs" />
     <Compile Include="Contracts\IBaseRepository.cs" />
     <Compile Include="Contracts\ICardRepository.cs" />
+    <Compile Include="Contracts\ICityRepository.cs" />
     <Compile Include="Contracts\IFileRepository.cs" />
     <Compile Include="Contracts\IMessageRepository.cs" />
     <Compile Include="Contracts\IModeratorRepository.cs" />

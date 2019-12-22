@@ -93,6 +93,12 @@ namespace MOFO.Models
 
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
+
+        public string SchoolName { get; set; }
+        public string CityName { get; set; }
+        public string Address { get; set; }
+        public string SchoolTelephone { get; set; }
+
     }
     public class RegisterTeacherViewModel
     {

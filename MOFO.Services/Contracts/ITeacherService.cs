@@ -13,5 +13,6 @@ namespace MOFO.Services.Contracts
         void RemoveTeacher(Teacher teacher);
         Teacher GetTeacherByAuth(string auth);
         List<Teacher> GetAll();
+        bool IsVerifiedByUserId(string userId);
     }
 }

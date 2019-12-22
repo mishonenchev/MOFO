@@ -16,5 +16,6 @@ namespace MOFO.Services.Contracts
         string NewAuthString();
         void Update();
         bool IsTelephoneValid(string telephone);
+        User GetUserByUserId(string userId);
     }
 }

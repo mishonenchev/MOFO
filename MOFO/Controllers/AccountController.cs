@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -181,7 +182,7 @@ namespace MOFO.Controllers
                         if (result.Succeeded)
                         {
                             await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
+                            UserManager.AddToRole(user.Id, "Student");
 
                             // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                             // Send an email with this link
@@ -232,7 +233,7 @@ namespace MOFO.Controllers
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
+                    UserManager.AddToRole(user.Id, "Teacher");
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -276,28 +277,52 @@ namespace MOFO.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Name, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
+                   
+                    UserManager.AddToRole(user.Id, "Moderator");
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    var school = new School()
+                    {
+                        Address = model.SchoolName,
+                        Name = model.SchoolName,
+                        Telephone = model.SchoolTelephone,
+
+                    };
+                    City city = null;
+                    if (int.TryParse(model.CityName, out int cityId))
+                    {
+                        city = _schoolService.GetCityById(cityId);
+                    }
+                    else
+                    {
+                        city = new City()
+                        {
+                            Name = model.CityName
+                        };
+                        _schoolService.AddCity(city);
+                    }
+                    school.City = city;
+                    _schoolService.AddSchool(school);
+
                     _moderatorService.AddModerator(new Moderator()
                     {
                         AspUserId = user.Id,
-                        Auth = _moderatorService.NewAuthString(),
                         Name = model.Name,
                         Email = model.Email,
                         Telephone = model.Telephone,
                         RegisteredDateTime = DateTime.Now,
                         VerificationDateTime = DateTime.Now,
-                        IsVerified=false
+                        IsVerified=false,
+                        School = school
                     });
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
@@ -305,6 +330,30 @@ namespace MOFO.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        public JsonResult SearchCity(string query)
+        {
+            var result = new List<object>();
+            if (!string.IsNullOrEmpty(query))
+            {
+                query = query.Trim();
+                var newQuery = query.ToLower();
+                var cities = _schoolService.SearchCity(newQuery);
+             
+
+                foreach (var city in cities)
+                {
+                    result.Add(new { id = city.Id, text = city.Name });
+                }
+                if (!cities.Any(x => x.Name.ToLower() == query.ToLower()))
+                {
+                    result.Add(new { id = query, text = query });
+                }
+            }
+            return Json(new { results = result }, JsonRequestBehavior.AllowGet);
+
         }
         [AllowAnonymous]
         [HttpGet]

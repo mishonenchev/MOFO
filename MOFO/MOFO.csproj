@@ -177,7 +177,9 @@
     <Compile Include="App_Start\Ninject.Web.Common.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Attributes\VerificationRequiredAttribute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
@@ -198,10 +200,12 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Admin.min.css" />
+    <Content Include="Content\select2.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\app\main\registerSchoolViewModel.js" />
     <Content Include="Scripts\app\main\registerStudentViewModel.js" />
     <Content Include="Scripts\app\main\registerTeacherViewModel.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -221,6 +225,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\knockout.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\select2.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -250,6 +255,7 @@
     <Content Include="Views\Account\RegisterSchool.cshtml" />
     <Content Include="Views\Account\RegisterTeacher.cshtml" />
     <Content Include="Views\Account\RegisterStudent.cshtml" />
+    <Content Include="Views\Error\VerificationModerator.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -5,8 +5,9 @@ namespace MOFO.App_Start
 {
     using System;
     using System.Web;
-
+    using System.Web.Mvc;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+    using MOFO.Attributes;
     using MOFO.Database;
     using MOFO.Database.Contracts;
     using MOFO.Database.Repositories;
@@ -15,6 +16,7 @@ namespace MOFO.App_Start
     using Ninject;
     using Ninject.Web.Common;
     using Ninject.Web.Common.WebHost;
+    using Ninject.Web.Mvc.FilterBindingSyntax;
 
     public static class NinjectWebCommon 
     {
@@ -114,6 +116,10 @@ namespace MOFO.App_Start
            .To<MessageRepository>()
          .InRequestScope();
             kernel
+         .Bind<ICityRepository>()
+         .To<CityRepository>()
+       .InRequestScope();
+            kernel
                 .Bind<IUserService>()
                 .To<UserService>()
            .InRequestScope();
@@ -149,6 +155,8 @@ namespace MOFO.App_Start
                .Bind<IStudentService>()
                .To<StudentService>()
           .InRequestScope();
+            kernel
+         .BindFilter<VerificationRequiredAttribute>(FilterScope.Controller, 0);
         }        
     }
 }

@@ -11,8 +11,7 @@ namespace MOFO.Services.Contracts
     {
         void AddModerator(Moderator Moderator);
         void RemoveModerator(Moderator Moderator);
-        string NewAuthString();
-        Moderator GetModeratorByAuth(Moderator moderator);
         List<Moderator> GetAll();
+        bool IsVerifiedByUserId(string userId);
     }
 }

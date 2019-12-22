@@ -1,1 +1,157 @@
-﻿
+﻿@model MOFO.Models.RegisterSchoolViewModel
+   @{ 
+       Layout = "";
+   }
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>MYEXAMS - Регистрация за учители</title>
+
+    @Styles.Render("~/Content/admin")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/css/select2")
+    <style>
+        .form-control {
+            max-width: none !important;
+        }
+    </style>
+</head>
+
+<body class="app flex-row align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mx-4">
+                    <div class="card-body p-4">
+                        @using (Html.BeginForm("RegisterSchool", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form", @onSubmit = "return vm.checkView()" }))
+                        {
+
+                            @Html.AntiForgeryToken()
+                            <h1>Регистрация за училища</h1>
+                            <p class="text-muted">Създайте администраторски акаунт за вашето училище и започнете да използвате платформата  </p>
+                            <div class="input-group mb-3">
+                                <span class="input-group-prepend">
+                                    <i class="icon-user"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Име и фамилия", @data_bind = "value: name, css: name.validClass,hasFocus: name.isFocused" })
+
+                                <div class="invalid-feedback" data-bind="visible: name.isInvalid, text: name.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-addon">
+                                    <i class="icon-lock"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.Telephone, new { @class = "form-control", @placeholder = "Телефон", data_bind = "value: telephone, css: telephone.validClass,hasFocus: telephone.isFocused" })
+                                <div class="invalid-feedback" data-bind="visible: telephone.isInvalid, text: telephone.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-addon">
+                                    <i class="icon-lock"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Имейл", data_bind = "value: email, css: email.validClass,hasFocus: email.isFocused" })
+                                <div class="invalid-feedback" data-bind="visible: email.isInvalid, text: email.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+
+
+                            <div class="input-group mb-4">
+                                <span class="input-group-addon">
+                                    <i class="icon-lock"></i>
+                                </span>
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Парола", data_bind = "value: password, css: password.validClass,hasFocus: password.isFocused" })
+                                <div class="invalid-feedback" data-bind="visible: password.isInvalid, text: password.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+                            <div class="input-group mb-4">
+                                <span class="input-group-addon">
+                                    <i class="icon-lock"></i>
+                                </span>
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Повторете паролата", data_bind = "value: confirmPassword, css: confirmPassword.validClass,hasFocus: confirmPassword.isFocused" })
+                                <div class="invalid-feedback" data-bind="visible: confirmPassword.isInvalid, text: confirmPassword.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-prepend">
+                                    <i class="icon-user"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.SchoolName, new { @class = "form-control", @placeholder = "Име на училището", @data_bind = "value: schoolName, css: schoolName.validClass,hasFocus: schoolName.isFocused" })
+
+                                <div class="invalid-feedback" data-bind="visible: schoolName.isInvalid, text: schoolName.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-prepend">
+                                    <i class="icon-user"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.SchoolTelephone, new { @class = "form-control", @placeholder = "Телефон за връзка", @data_bind = "value: schoolTelephone, css: schoolTelephone.validClass,hasFocus: schoolTelephone.isFocused" })
+
+                                <div class="invalid-feedback" data-bind="visible: schoolTelephone.isInvalid, text: schoolTelephone.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-prepend">
+                                    <i class="icon-user"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.SchoolTelephone, new { @class = "form-control", @placeholder = "Адрес на училището", @data_bind = "value: schoolAddress, css: schoolAddress.validClass,hasFocus: schoolAddress.isFocused" })
+
+                                <div class="invalid-feedback" data-bind="visible: schoolAddress.isInvalid, text: schoolAddress.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-prepend">
+                                    <i class="icon-user"></i>
+                                </span>
+                                <select id="citySelect" style="width:100%">
+                                </select>
+                                <div class="invalid-feedback" data-bind="visible: schoolCity.isInvalid, text: schoolCity.message">
+                                    Please provide a valid informations.
+                                </div>
+                                @Html.HiddenFor(x => x.CityName, new { @id = "cityName" })
+
+                                <div class="invalid-feedback" data-bind="visible: name.isInvalid, text: name.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-block btn-success">Напред</button>
+                        }
+                    </div>
+                    <div class="card-footer p-4">
+                        <div class="row">
+                            <div class="col-12" style="text-align: center">
+                                <a class="btn btn-light" href="@Url.Action("Login", "Account")" type="button">
+                                    Вече имате акаунт?
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/js/select2")
+    @Scripts.Render("~/bundles/dashboard")
+    @Scripts.Render("~/app/inputValidation")
+    @Scripts.Render("~/main/registerSchool")
+</body>
+
+
+</html>
+
