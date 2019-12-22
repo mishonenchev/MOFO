@@ -6,6 +6,10 @@ function RegisterTeacherViewModel() {
     self.telephone = ko.observable().extend({ addSubObservables: true });
     self.password = ko.observable().extend({ addSubObservables: true });
     self.confirmPassword = ko.observable().extend({ addSubObservables: true });
+    self.cityName = ko.observable().extend({ addSubObservables: true });
+    self.schoolName = ko.observable().extend({ addSubObservables: true });
+    self.schoolCity = ko.observable().extend({ addSubObservables: true });
+    self.school = ko.observable().extend({ addSubObservables: true });
     self.submitEnable = ko.observable(true);
 
     self.name.subscribe(function () {
@@ -79,15 +83,15 @@ function RegisterTeacherViewModel() {
         }
     })
     self.confirmPassword.subscribe(function () {
-        if (self.password() == self.confirmPassword()) {
+        if (self.password() === self.confirmPassword()) {
             valid(self.confirmPassword);
         } else {
             invalid(self.confirmPassword, "Паролите не съвпадат");
         }
     })
+
     self.checkView = function () {
-        self.firstName.validate();
-        self.lastName.validate();
+        self.name.validate();
         self.telephone.validate();
         self.email.validate();
         if (self.password().length > 5 && self.password.length < 400) {
@@ -95,16 +99,59 @@ function RegisterTeacherViewModel() {
         } else {
             invalid(self.password, "Паролата е твърде кратка");
         }
-        if (self.password() == self.confirmPassword()) {
+        if (self.password() === self.confirmPassword()) {
             valid(self.confirmPassword);
         } else {
             invalid(self.confirmPassword, "Паролите не съвпадат");
         }
+        if ($("#citySelect").val() === null) {
+            invalid(self.schoolCity, "Населеното място е задължително поле");
+        } else {
+            valid(self.schoolCity);
+        }
+        if ($("#schoolSelect").val() === null) {
+            invalid(self.school, "Училището е задължително поле");
+        } else {
+            valid(self.school);
+        }
 
-        return !self.firstName.isInvalid() && !self.lastName.isInvalid() && !self.telephone.isInvalid() && !self.password.isInvalid() && !self.confirmPassword.isInvalid() && !self.email.isInvalid()
+        return !self.name.isInvalid() && !self.telephone.isInvalid() && !self.password.isInvalid() && !self.confirmPassword.isInvalid() && !self.email.isInvalid() && !self.schoolName.isInvalid() && !self.cityName.isInvalid()
 
     }
-    self.validFields = ko.observableArray();
+
+
+    $("#citySelect").select2({
+        ajax: {
+            url: window.location.protocol + "//" + window.location.host + "/account/searchCityTeacher",
+            data: function (params) {
+                var query = {
+                    query: params.term
+                }
+                return query;
+            }
+        },
+        placeholder: "Населено място"
+    });
+    $('#citySelect').on('select2:select', function (e) {
+        $("#cityName").val($('#citySelect').val());
+    });
+
+    $("#schoolSelect").select2({
+        ajax: {
+            url: window.location.protocol + "//" + window.location.host + "/account/searchSchool",
+            data: function (params) {
+                var query = {
+                    query: params.term,
+                    cityName: $("#citySelect").text()
+                }
+                return query;
+            }
+        },
+        placeholder: "Училище"
+    });
+    $('#schoolSelect').on('select2:select', function (e) {
+        $("#schoolName").val($('#schoolSelect').val());
+    });
 
 }
 var vm = new RegisterTeacherViewModel();

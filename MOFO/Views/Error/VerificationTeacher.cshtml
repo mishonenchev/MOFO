@@ -1,8 +1,8 @@
-﻿@{ 
+﻿@{
     Layout = "";
 }
 <!DOCTYPE html>
- 
+
 <html lang="bg">
 <head>
     <meta charset="utf-8">
@@ -23,11 +23,11 @@
                 <div class="input-prepend input-group">
 
 
-                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", style="width: 100%" }))
+                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", style = "width: 100%" }))
                     {
                         @Html.AntiForgeryToken()
                         <button class="btn btn-info w-100 mt-2" type="submit">Излез от профила</button>
-                   }
+                    }
                 </div>
             </div>
         </div>

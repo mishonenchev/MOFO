@@ -13,5 +13,9 @@ namespace MOFO.Controllers
         {
             return View();
         }
+        public ActionResult VerificationTeacher()
+        {
+            return View();
+        }
     }
 }

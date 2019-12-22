@@ -181,7 +181,6 @@ namespace MOFO.Controllers
                         var result = await UserManager.CreateAsync(user, model.Password);
                         if (result.Succeeded)
                         {
-                            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                             UserManager.AddToRole(user.Id, "Student");
 
                             // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -207,6 +206,7 @@ namespace MOFO.Controllers
                                 RegisterDateTime = DateTime.Now,
                                 User = _user
                             });
+                            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                             return RedirectToAction("Index", "Home");
                         }
                         AddErrors(result);
@@ -228,11 +228,10 @@ namespace MOFO.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Name, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     UserManager.AddToRole(user.Id, "Teacher");
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
@@ -252,14 +251,23 @@ namespace MOFO.Controllers
                         IsActive = true
                     };
                     _userService.AddUser(_user);
+
+                    School school = null;
+                    if (int.TryParse(model.CityName, out int schoolId))
+                    {
+                        school = _schoolService.GetSchoolById(schoolId);
+                    }
+
                     _teacherService.AddTeacher(new Teacher()
                     {
                         RegisteredDateTime = DateTime.Now,
-                        VerificationDateTime= DateTime.Now,
+                        VerificationDateTime = DateTime.Now,
                         IsVerified = false,
+                        School = school,
                         User = _user
+                        
                     });
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
@@ -321,6 +329,7 @@ namespace MOFO.Controllers
                         VerificationDateTime = DateTime.Now,
                         IsVerified=false,
                         School = school
+                 
                     });
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     return RedirectToAction("Index", "Home");
@@ -342,7 +351,6 @@ namespace MOFO.Controllers
                 var newQuery = query.ToLower();
                 var cities = _schoolService.SearchCity(newQuery);
              
-
                 foreach (var city in cities)
                 {
                     result.Add(new { id = city.Id, text = city.Name });
@@ -350,6 +358,60 @@ namespace MOFO.Controllers
                 if (!cities.Any(x => x.Name.ToLower() == query.ToLower()))
                 {
                     result.Add(new { id = query, text = query });
+                }
+            }
+            return Json(new { results = result }, JsonRequestBehavior.AllowGet);
+
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        public JsonResult SearchCityTeacher(string query)
+        {
+            var result = new List<object>();
+            if (!string.IsNullOrEmpty(query))
+            {
+                query = query.Trim();
+                var newQuery = query.ToLower();
+                var cities = _schoolService.SearchCity(newQuery);
+
+                foreach (var city in cities)
+                {
+                    result.Add(new { id = city.Id, text = city.Name });
+                }
+            }
+            else
+            {
+                var cities = _schoolService.GetAllCities();
+                foreach (var city in cities)
+                {
+                    result.Add(new { id = city.Id, text = city.Name });
+                }
+            }
+            return Json(new { results = result }, JsonRequestBehavior.AllowGet);
+
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        public JsonResult SearchSchool(string cityName, string query)
+        {
+            var result = new List<object>();
+            if (!string.IsNullOrEmpty(query))
+            {
+                query = query.Trim();
+                var newQuery = query.ToLower();
+                var schools = _schoolService.GetSchoolsInCity(cityName, newQuery);
+
+                foreach (var school in schools)
+                {
+                    result.Add(new { id = school.Id, text = school.Name });
+                }
+            }
+            else if (!string.IsNullOrEmpty(cityName))
+            {
+                var schools = _schoolService.GetSchoolsInCity(cityName, "");
+                foreach (var school in schools)
+                {
+                    result.Add(new { id = school.Id, text = school.Name });
                 }
             }
             return Json(new { results = result }, JsonRequestBehavior.AllowGet);

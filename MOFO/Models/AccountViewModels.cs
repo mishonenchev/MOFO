@@ -114,9 +114,14 @@ namespace MOFO.Models
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
+        [Required]
+        [DataType(DataType.Text)]
+        public string CityName { get; set; }
+        [Required]
+        [DataType(DataType.Text)]
+        public string SchoolName { get; set; }
     }
     public class RegisterStudentViewModel
     {

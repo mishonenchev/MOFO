@@ -29,17 +29,29 @@ namespace MOFO.Services
             _schoolRepository.Remove(school);
             _schoolRepository.SaveChanges();
         }
-        public School GetSchoolByCity(School school)
+        public List<School> GetSchoolsInCity(string cityName, string schoolName)
         {
-            return _schoolRepository.Where(x => x.City.Id == school.City.Id).FirstOrDefault();
+            if (string.IsNullOrEmpty(schoolName))
+            {
+                return _schoolRepository.Where(x => x.City.Name == cityName).ToList();
+            }
+            return _schoolRepository.Where(x => x.City.Name==cityName && x.Name.Contains(schoolName)).ToList();
         }
         public List<City> SearchCity(string cityName)
         {
             return _cityRepository.Where(x => x.Name.Contains(cityName)).ToList();
         }
+        public School GetSchoolById(int id)
+        {
+            return _schoolRepository.Where(x => x.Id == id).FirstOrDefault();
+        }
         public City GetCityById(int id)
         {
             return _cityRepository.Where(x => x.Id == id).FirstOrDefault();
+        }
+        public List<City> GetAllCities()
+        {
+            return _cityRepository.GetAll().ToList();
         }
         public void AddCity(City city)
         {
