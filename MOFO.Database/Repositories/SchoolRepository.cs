@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace MOFO.Database.Repositories
 {
@@ -12,6 +13,22 @@ namespace MOFO.Database.Repositories
     {
         public SchoolRepository(IDatabase database) : base(database)
         {
+        }
+        public IEnumerable<School> SearchSchool(string name)
+        {
+            IQueryable<School> query = _dbSet;
+            if (!string.IsNullOrEmpty(name))
+            {
+                var keywords = name.Split(' ');
+                foreach (var item in keywords)
+                {
+                    if (!string.IsNullOrWhiteSpace(item))
+                    {
+                        query = query.Where(x => x.Name.ToLower().Contains(item.ToLower()));
+                    }
+                }
+            }
+            return query.Include(x=>x.City).ToList();
         }
     }
 }

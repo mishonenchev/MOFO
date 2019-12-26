@@ -179,10 +179,14 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Attributes\VerificationRequiredAttribute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ModeratorController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
+    <Compile Include="Controllers\StudentController.cs" />
+    <Compile Include="Controllers\TeacherController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -205,6 +209,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\app\admin\schoolsViewModel-1.0.0.js" />
+    <Content Include="Scripts\coreui.min.js" />
     <Content Include="Scripts\app\main\registerSchoolViewModel.js" />
     <Content Include="Scripts\app\main\registerStudentViewModel.js" />
     <Content Include="Scripts\app\main\registerTeacherViewModel.js" />
@@ -225,6 +231,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\knockout.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\popper.min.js" />
     <Content Include="Scripts\select2.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -257,12 +264,18 @@
     <Content Include="Views\Account\RegisterStudent.cshtml" />
     <Content Include="Views\Error\VerificationModerator.cshtml" />
     <Content Include="Views\Error\VerificationTeacher.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Admin\Schools.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\Files\" />
     <Folder Include="Views\File\" />
+    <Folder Include="Views\Moderator\" />
     <Folder Include="Views\Room\" />
+    <Folder Include="Views\Student\" />
+    <Folder Include="Views\Teacher\" />
     <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>

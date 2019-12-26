@@ -16,7 +16,24 @@ namespace MOFO.Controllers
             _userService = userService;
         }
         public ActionResult Index()
-        {  
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index", "Admin");
+                }else if (User.IsInRole("Moderator"))
+                {
+                    return RedirectToAction("Index", "Moderator");
+                }else if (User.IsInRole("Teacher"))
+                {
+                    return RedirectToAction("Index", "Teacher");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Student");
+                }
+            }
             return View();
         }
 

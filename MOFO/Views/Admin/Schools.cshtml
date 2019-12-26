@@ -1,0 +1,74 @@
+﻿
+@{
+    ViewBag.Title = "Schools";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="p-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <select id="citySelect" class="form-control">
+                                <option value="0">Населено място</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <input class="form-control" data-bind="value: schoolName" placeholder="Име на училището" />
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select id="filterSelect" class="form-control">
+                                <option value="0">Статус</option>
+                                <option value="1">Неодобрен</option>
+                                <option value="2">Одобрен</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <button class="btn btn-secondary form-control" data-bind="click: clearForm">Изчисти</button>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <button class="btn btn-success form-control" data-bind="click: search">Търси</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Име на училище</th>
+                                        <th>Населено място</th>
+                                        <th>Статус</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!--ko foreach: schools-->
+                                    <tr>
+                                        <td data-bind="text: $index()+1"></td>
+                                        <td><span data-bind="text: schoolName"></span></td>
+                                        <td><span data-bind="text: city"></span></td>
+                                        <td data-bind="text: status"></td>
+                                        <td><a class="btn btn-primary" target="_blank" data-bind="attr:{href: schoolUrl}">Детайли</a></td>
+                                    </tr>
+                                    <!--/ko-->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section AddToScript{
+    @Scripts.Render("~/admins/schools")
+}

@@ -15,5 +15,6 @@ namespace MOFO.Models
         public City City { get; set; }
         public string Address { get; set; }
         public string Telephone { get; set; }
+        public bool IsVerified { get; set; }
     }
 }

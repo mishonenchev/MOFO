@@ -298,9 +298,10 @@ namespace MOFO.Controllers
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
                     var school = new School()
                     {
-                        Address = model.SchoolName,
+                        Address = model.SchoolAddress,
                         Name = model.SchoolName,
                         Telephone = model.SchoolTelephone,
+                        IsVerified = false
 
                     };
                     City city = null;
@@ -327,7 +328,6 @@ namespace MOFO.Controllers
                         Telephone = model.Telephone,
                         RegisteredDateTime = DateTime.Now,
                         VerificationDateTime = DateTime.Now,
-                        IsVerified=false,
                         School = school
                  
                     });
@@ -350,14 +350,20 @@ namespace MOFO.Controllers
                 query = query.Trim();
                 var newQuery = query.ToLower();
                 var cities = _schoolService.SearchCity(newQuery);
-             
+                if(!User.IsInRole("Admin"))
+                {
+                    cities = cities.Where(x => x.IsVerified).ToList();
+                }
                 foreach (var city in cities)
                 {
                     result.Add(new { id = city.Id, text = city.Name });
                 }
-                if (!cities.Any(x => x.Name.ToLower() == query.ToLower()))
+                if (!User.IsInRole("Admin"))
                 {
-                    result.Add(new { id = query, text = query });
+                    if (!cities.Any(x => x.Name.ToLower() == query.ToLower()))
+                    {
+                        result.Add(new { id = query, text = query });
+                    }
                 }
             }
             return Json(new { results = result }, JsonRequestBehavior.AllowGet);

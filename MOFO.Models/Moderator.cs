@@ -18,6 +18,5 @@ namespace MOFO.Models
         public string Telephone { get; set; }
         public DateTime RegisteredDateTime { get; set; }
         public DateTime VerificationDateTime { get; set; }
-        public bool IsVerified { get; set; }
     }
 }

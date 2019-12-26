@@ -29,7 +29,7 @@ namespace MOFO.Services
      
         public bool IsVerifiedByUserId(string userId)
         {
-            return _moderatorRepository.Where(x => x.AspUserId == userId).First().IsVerified;
+            return _moderatorRepository.Where(x => x.AspUserId == userId, x=>x.School).First().School.IsVerified;
         }
         public List<Moderator> GetAll()
         {

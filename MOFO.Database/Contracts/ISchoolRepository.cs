@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace MOFO.Database.Contracts
 {
-    public interface ISchoolRepository: IBaseRepository<School>
+    public interface ISchoolRepository : IBaseRepository<School>
     {
+        IEnumerable<School> SearchSchool(string name);
     }
 }

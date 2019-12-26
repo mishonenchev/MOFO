@@ -18,5 +18,6 @@ namespace MOFO.Services.Contracts
         School GetSchoolById(int id);
         List<City> GetAllCities();
         void AddCity(City city);
+        List<School> SearchSchool(string schoolName, int cityId, int status);
     }
 }
