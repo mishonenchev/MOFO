@@ -349,7 +349,7 @@ namespace MOFO.Controllers
             {
                 query = query.Trim();
                 var newQuery = query.ToLower();
-                var cities = _schoolService.SearchCity(newQuery);
+                var cities = _schoolService.SearchCity(newQuery,0);
                 if(!User.IsInRole("Admin"))
                 {
                     cities = cities.Where(x => x.IsVerified).ToList();
@@ -378,7 +378,7 @@ namespace MOFO.Controllers
             {
                 query = query.Trim();
                 var newQuery = query.ToLower();
-                var cities = _schoolService.SearchCity(newQuery);
+                var cities = _schoolService.SearchCity(newQuery,0);
 
                 foreach (var city in cities)
                 {
