@@ -31,7 +31,7 @@
 
     $("#citySelect").select2({
         ajax: {
-            url: window.location.protocol + "//" + window.location.host + "/account/searchCity",
+            url: window.location.protocol + "//" + window.location.host + "/account/searchCityTeacher",
             data: function (params) {
                 var query = {
                     query: params.term

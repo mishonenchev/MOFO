@@ -209,6 +209,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\app\admin\citiesViewModel.js" />
     <Content Include="Scripts\app\admin\schoolsViewModel-1.0.0.js" />
     <Content Include="Scripts\app\admin\schoolViewModel-1.0.0.js" />
     <Content Include="Scripts\coreui.min.js" />
@@ -268,6 +269,7 @@
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Admin\Schools.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\Cities.cshtml" />
     <Content Include="Views\Admin\School.cshtml" />
   </ItemGroup>
   <ItemGroup>

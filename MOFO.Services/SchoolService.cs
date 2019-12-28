@@ -37,9 +37,33 @@ namespace MOFO.Services
             }
             return _schoolRepository.Where(x => x.City.Name==cityName && x.Name.Contains(schoolName)).ToList();
         }
-        public List<City> SearchCity(string cityName)
+        public void VerifyCityById(int id)
         {
-            return _cityRepository.Where(x => x.Name.Contains(cityName)).ToList();
+            var city = _cityRepository.Where(x => x.Id == id).FirstOrDefault();
+            city.IsVerified = true;
+            _cityRepository.SaveChanges();
+        }
+        public List<School> GetSchoolsByCityId(City city)
+        {
+            return _schoolRepository.Where(x => x.City.Id == city.Id).ToList();
+        }
+        public List<City> SearchCity(string cityName, int status)
+        {
+            List<City> results = new List<City>();
+            if (!string.IsNullOrEmpty(cityName))
+            {
+                results = _cityRepository.Where(x=>x.Name.Contains(cityName)).ToList();
+            }
+            else
+            {
+                results = _cityRepository.GetAll().ToList();
+            }
+            if (status != 0)
+            {
+                var booleanStatus = (status - 1) == 0 ? false : true;
+                results = results.Where(x => x.IsVerified == booleanStatus).ToList();
+            }
+            return results;
         }
         public List<School> SearchSchool(string schoolName, int cityId, int status)
         {

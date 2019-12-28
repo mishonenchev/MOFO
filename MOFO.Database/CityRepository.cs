@@ -14,5 +14,6 @@ namespace MOFO.Database
         public CityRepository(IDatabase database) : base(database)
         {
         }
+       
     }
 }

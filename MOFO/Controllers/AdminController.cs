@@ -29,6 +29,10 @@ namespace MOFO.Controllers
         {
             return View();
         }
+        public ActionResult Cities()
+        {
+            return View();
+        }
         public ActionResult School(int id)
         {
             var school = _schoolService.GetSchoolById(id);
@@ -136,6 +140,11 @@ namespace MOFO.Controllers
             }
             return Json(new { status = "ERR" });
 
+        }
+        public ActionResult SearchCities(string cityName = null, int status = 0)
+        {
+            var cities = _schoolService.SearchCity(cityName, status);
+            return Json(new { status = "OK", cities = cities.Select(x => new { cityName = x.Name, status = x.IsVerified ? "Одобрен" : "Неодобрен", cityUrl = "/admin/city?id=" + x.Id }) }, JsonRequestBehavior.AllowGet);
         }
     }
 }
