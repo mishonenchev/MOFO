@@ -3061,7 +3061,7 @@ tbody.collapse.show {
 .show > .nav-pills .navbar .dropdown-toggle, .navbar
 .show > .nav-pills .dropdown-toggle {
     color: #fff;
-    background-color: #20a8d8;
+    background-color: #f86c6b;
     box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.14);
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -12980,5 +12980,25 @@ i.loader {
 @media (max-width: 768px) {
     .total-table tr td:first-child {
         width: 65% !important;
+    }
+}
+.card.bg-dark.text-white {
+    height: 180px;
+    overflow: hidden;
+    border: none;
+}
+
+    .card.bg-dark.text-white .card-img-overlay {
+        text-align: center;
+        padding: 2rem;
+    }
+
+        .card.bg-dark.text-white .card-img-overlay .card-title {
+            font-size: 42px;
+        }
+
+@media (max-width: 768px){
+    .card.bg-dark.text-white .card-img-overlay .card-title {
+        font-size: 32px;
     }
 }

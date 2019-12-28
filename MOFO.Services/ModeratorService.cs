@@ -35,5 +35,9 @@ namespace MOFO.Services
         {
             return _moderatorRepository.GetAll().ToList();
         }
+        public Moderator GetModeratorBySchool(int schoolId)
+        {
+            return _moderatorRepository.Where(x => x.School.Id == schoolId).FirstOrDefault();
+        }
     }
 }

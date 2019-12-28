@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
+using System.Linq.Expressions;
 
 namespace MOFO.Database.Repositories
 {
@@ -29,6 +30,11 @@ namespace MOFO.Database.Repositories
                 }
             }
             return query.Include(x=>x.City).ToList();
+        }
+        public IEnumerable<School> WhereIncludeAll(Expression<Func<School, bool>> where)
+        {
+            return _dbSet.Where(where).Include(x => x.City);
+
         }
     }
 }

@@ -66,7 +66,7 @@ namespace MOFO.Services
         }
         public School GetSchoolById(int id)
         {
-            return _schoolRepository.Where(x => x.Id == id).FirstOrDefault();
+            return _schoolRepository.WhereIncludeAll(x => x.Id == id).FirstOrDefault();
         }
         public City GetCityById(int id)
         {

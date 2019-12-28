@@ -13,5 +13,6 @@ namespace MOFO.Services.Contracts
         void RemoveModerator(Moderator Moderator);
         List<Moderator> GetAll();
         bool IsVerifiedByUserId(string userId);
+        Moderator GetModeratorBySchool(int schoolId);
     }
 }

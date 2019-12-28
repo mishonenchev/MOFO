@@ -10,5 +10,6 @@ namespace MOFO.Database.Contracts
     public interface ISchoolRepository : IBaseRepository<School>
     {
         IEnumerable<School> SearchSchool(string name);
+        IEnumerable<School> WhereIncludeAll(System.Linq.Expressions.Expression<Func<School, bool>> where);
     }
 }

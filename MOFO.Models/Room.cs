@@ -18,5 +18,6 @@ namespace MOFO.Models
         public string Name{ get; set; }
         public ICollection<Card> Cards { get; set; }
         public School School { get; set; }
+        public string Description { get; set; }
     }
 }

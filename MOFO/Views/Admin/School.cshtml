@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "School";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section AddToHead{
+    <style>
+        .nav-pills .nav-link.active{
+            background-color:rgb(22, 163, 184);
+        }
+    </style>
+    }
+
+@if (ViewBag.IsVerified == false)
+{
+    <div class="alert alert-warning clearfix mb-0" role="alert">Това училище все още не е потвърдено! За да им предоставите пълната функционалност, одобрете профила. <button class="btn btn-warning float-right" data-bind="click: openConfirmModal">Потвърди</button> </div>
+}
+<div class="card bg-dark text-white" style="margin-bottom:0">
+    <img class="card-img" src="/Content/images/cool-background.jpg" alt="Card image">
+    <div class="card-img-overlay" style="background: rgb(25, 188, 213);">
+        <h1 class="card-title">@ViewBag.SchoolName</h1>
+        <p class="card-text">@ViewBag.City</p>
+
+        <div class="card-left">
+            <small>Статус:</small>
+            <h5><strong>@ViewBag.Status</strong></h5>
+        </div>
+        <div class="card-right">
+            <ul>
+                <li>@ViewBag.UserNames</li>
+                <li>тел. @ViewBag.Telephone</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<ul class="nav nav-pills nav-fill" style="background: white">
+    <li class="nav-item">
+        <a id="room-link" class="nav-link" href="" data-bind="click: getRooms">Стаи</a>
+    </li>
+    <li class="nav-item">
+        <a id="info-link" class="nav-link active" href="" data-bind="click: getInfo">Информация</a>
+    </li>
+</ul>
+
+<div id="room-section" class="d-none">
+    <ol class="breadcrumb mt-4">
+        <li class="breadcrumb-item text-white">.</li>
+        <li class="breadcrumb-menu d-md-down-none">
+            <div class="btn-group" role="group">
+                <button class="btn btn-success" data-bind="click: createNewRoom">+ Добави стая</button>
+            </div>
+        </li>
+    </ol>
+    <!--ko if: rooms().length==0-->
+    <div class="flex-row align-items-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-7">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5><strong>Няма намерени стаи за това училище.</strong> </h5><p> Можете да създадете такива с бутона "+ Добави стая"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ko-->
+    <!--ko if: rooms().length!=0-->
+    <div class="card-deck" style="max-width: 70rem;margin: 0 auto;" data-bind="foreach: rooms">
+
+        <div class="card-3 card" style="cursor:pointer" data-bind="click: $root.openRoomModal">
+            <div class="social-box">
+                <div class="card-title" style="padding: 30px 0px; margin: 0px; background: rgb(4, 188, 164) none repeat scroll 0% 0%; color: white;"><h4 data-bind="text: name">стая 404</h4><p data-bind="text: description">описание</p></div>
+
+                <ul>
+                    <li class="w-100">
+                        <strong data-bind="text: cardCount">0</strong>
+                        <span>БРОЙ КАРТИ</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--/ko-->
+
+</div>
+<div class="container-fluid">
+    <div id="info-section" style="display: block;background: white none repeat scroll 0% 0%;" class="mt-3">
+        <div class="row justify-content-end mr-lg-2">
+            <div class="col-lg-3">
+                <button class="btn btn-warning max-w-lg-200 float-right" data-bind="click: openInfoEdit">Редактиране</button>
+            </div>
+        </div>
+        <table class="table table-striped">
+            <tbody data-bind="foreach: infos">
+                <tr>
+                    <td data-bind="text: fieldName">Име на училището</td>
+                    <td data-bind="text: fieldValue">ОУ Антим 1</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!--ko with: roomEditModal-->
+<div class="modal fade" id="roomEditModal" data-bind="css: modalCss">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" data-bind="text: modalHeader">Нова стая</div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input class="form-control" placeholder="Име на стаята" data-bind="value: name, css: name.validClass" />
+                    <div class="invalid-feedback" data-bind="visible: name.isInvalid, text: name.message">
+                        Please provide a valid informations.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" placeholder="Допълнително описание" data-bind="value: description, css: description.validClass" />
+                    <div class="invalid-feedback" data-bind="visible: description.isInvalid, text: description.message">
+                        Please provide a valid informations.
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Затвори</button>
+                    <!--ko if: isEdit()==true-->
+                    <button type="button" class="btn btn-danger" data-bind="click: deleteClass">Изтриване</button>
+                    <!--/ko-->
+                    <button type="button" class="btn btn-primary" id="saveBtn" data-bind="click: saveChanges, text: saveBtnText">Добави</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ko-->
+<!--ko with: confirmSchoolModal-->
+<div class="modal fade modal-warning" id="confirmRoomModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">Валидиране на училище</div>
+            <div class="modal-body">
+                <p><b>Сигурни ли сте, че искате да одобрите <span data-bind="html: schoolName"></span>?</b></p>
+                <p>Това ще предостави пълна функционалност на администратора на училището и на всички регистрирани учители. </p>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Отказ</button>
+                    <button type="button" class="btn btn-success" id="saveBtn" data-bind="click: confirmSchool">Потвърждаване</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ko-->
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+@section AddToScript{
+    <script>var schoolName = '@ViewBag.SchoolName'</script>
+    <script>var schoolId = @ViewBag.SchoolId</script>
+    @Scripts.Render("~/admins/school")
+}

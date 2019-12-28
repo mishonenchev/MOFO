@@ -8,7 +8,10 @@
     @Styles.Render("~/Content/admin")
     @Scripts.Render("~/bundles/modernizr")
     @Styles.Render("~/css/select2")
-
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
 </head>
     <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden sidebar-lg-show">
