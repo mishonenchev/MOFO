@@ -1,0 +1,190 @@
+﻿
+@{
+    ViewBag.Title = "City";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section AddToHead{
+    <style>
+        .nav-pills .nav-link.active {
+            background-color: rgb(22, 163, 184);
+        }
+    </style>
+}
+
+@if (ViewBag.IsVerified == false)
+{
+    <div class="alert alert-warning clearfix mb-0" role="alert">Това населено място все още не е потвърдено! За да може да бъде използвано при регистрация, моля одобрете населеното място. <button class="btn btn-warning float-right" data-bind="click: openConfirmModal">Потвърди</button> </div>
+}
+<div class="card bg-dark text-white" style="margin-bottom:0">
+    <div class="card-img-overlay" style="background: rgb(25, 188, 213);">
+        <h1 class="card-title">@ViewBag.CityName</h1>
+
+        <div class="card-left">
+            <small>Статус:</small>
+            <h5><strong>@ViewBag.Status</strong></h5>
+        </div>
+
+    </div>
+</div>
+
+<ul class="nav nav-pills nav-fill" style="background: white">
+    <li class="nav-item">
+        <a id="schools-link" class="nav-link" href="" data-bind="click: getSchools">Училища</a>
+    </li>
+    <li class="nav-item">
+        <a id="cities-link" class="nav-link active" href="" data-bind="click: getCities">Градове</a>
+    </li>
+</ul>
+
+<div id="schools-section" class="d-none">
+
+    <!--ko if: schools().length==0-->
+    <div class="flex-row align-items-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-7">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5><strong>Няма намерени училища за това населено място.</strong> </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ko-->
+    <!--ko if: schools().length!=0-->
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Име на училище</th>
+                        <th>Населено място</th>
+                        <th>Статус</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--ko foreach: schools-->
+                    <tr>
+                        <td data-bind="text: id"></td>
+                        <td><span data-bind="text: schoolName"></span></td>
+                        <td><span data-bind="text: city"></span></td>
+                        <td data-bind="text: status"></td>
+                        <td><a class="btn btn-primary" target="_parent" data-bind="attr:{href: schoolUrl}">Детайли</a></td>
+                    </tr>
+                    <!--/ko-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--/ko-->
+
+</div>
+<div class="container-fluid">
+    <div id="cities-section" style="display: block;background: white none repeat scroll 0% 0%;" class="mt-3">
+        <ol class="breadcrumb mt-3">
+            <li class="breadcrumb-item d-md-down-none">
+                <div class="btn-group" role="group">
+                    <button class="btn btn-success" data-bind="click: openMergeModal">Сливане на градове</button>
+                </div>
+            </li>
+            <li class="breadcrumb-menu d-md-down-none">
+                <div class="btn-group" role="group">
+                    <button class="btn btn-success" data-bind="click: createNewCity">Добави град</button>
+                </div>
+            </li>
+        </ol>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Име на населено място</th>
+                            <th>Статус</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: cities">
+                        <tr>
+                            <td data-bind="text: id"></td>
+                            <td data-bind="text: name"></td>
+                            <td data-bind="text: status"</td>
+                            <td><a class="btn btn-primary" target="_parent" data-bind="attr:{href: cityUrl}">Детайли</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--ko with: addCityModal-->
+<div class="modal fade" id="addCityModal" data-bind="css: modalCss">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" data-bind="text: modalHeader"></div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input class="form-control" placeholder="Име на населеното място" data-bind="value: name, css: name.validClass" />
+                    <div class="invalid-feedback" data-bind="visible: name.isInvalid, text: name.message">
+                        Please provide a valid informations.
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Затвори</button>
+                    <button type="button" class="btn btn-primary" id="saveBtn" data-bind="click: saveChanges, text: saveBtnText">Добави</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ko-->
+<!--ko with: confirmCityModal-->
+<div class="modal fade modal-warning" id="confirmCityModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">Валидиране на населено място</div>
+            <div class="modal-body">
+                <p><b>Сигурни ли сте, че искате да одобрите <span data-bind="html: cityName"></span>?</b></p>
+                <p>Това ще позволи регистрирането на училища в това населено място. </p>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Отказ</button>
+                    <button type="button" class="btn btn-success" id="saveBtn" data-bind="click: confirmCity">Потвърждаване</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ko-->
+<!--ko with: mergeCityModal-->
+<div class="modal fade" id="mergeCityModal" data-bind="css: modalCss">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" data-bind="text: modalHeader"></div>
+            <div class="modal-body">
+                <select id="citySelect" style="width:100%"></select>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Отказ</button>
+                    <button type="button" class="btn btn-success" id="saveBtn" data-bind="click: saveChanges, text: saveBtnText"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ko-->
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+@section AddToScript{
+    <script>var cityName = "@ViewBag.CityName"</script>
+    <script>var cityId = "@ViewBag.CityId"</script>
+    @Scripts.Render("~/Scripts/app/admin/cityViewModel.js")
+}

@@ -210,6 +210,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\app\admin\citiesViewModel.js" />
+    <Content Include="Scripts\app\admin\cityViewModel.js" />
     <Content Include="Scripts\app\admin\schoolsViewModel-1.0.0.js" />
     <Content Include="Scripts\app\admin\schoolViewModel-1.0.0.js" />
     <Content Include="Scripts\coreui.min.js" />
@@ -271,6 +272,7 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\Cities.cshtml" />
     <Content Include="Views\Admin\School.cshtml" />
+    <Content Include="Views\Admin\City.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

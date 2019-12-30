@@ -43,9 +43,9 @@ namespace MOFO.Services
             city.IsVerified = true;
             _cityRepository.SaveChanges();
         }
-        public List<School> GetSchoolsByCityId(City city)
+        public List<School> GetSchoolsByCityId(int cityId)
         {
-            return _schoolRepository.Where(x => x.City.Id == city.Id).ToList();
+            return _schoolRepository.Where(x => x.City.Id == cityId, x=>x.City).ToList();
         }
         public List<City> SearchCity(string cityName, int status)
         {
@@ -103,6 +103,11 @@ namespace MOFO.Services
         public void AddCity(City city)
         {
             _cityRepository.Add(city);
+            _cityRepository.SaveChanges();
+        }
+        public void RemoveCity(City city)
+        {
+            _cityRepository.Remove(city);
             _cityRepository.SaveChanges();
         }
         public List<School> GetAll()

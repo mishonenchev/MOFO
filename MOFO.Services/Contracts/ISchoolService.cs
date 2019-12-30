@@ -16,10 +16,11 @@ namespace MOFO.Services.Contracts
         List<City> SearchCity(string cityName, int status);
         City GetCityById(int id);
         void VerifyCityById(int id);
-        List<School> GetSchoolsByCityId(City city);
+        List<School> GetSchoolsByCityId(int cityId);
         School GetSchoolById(int id);
         List<City> GetAllCities();
         void AddCity(City city);
+        void RemoveCity(City city);
         List<School> SearchSchool(string schoolName, int cityId, int status);
     }
 }

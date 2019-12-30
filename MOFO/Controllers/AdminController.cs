@@ -57,10 +57,60 @@ namespace MOFO.Controllers
             return RedirectToAction("Schools", "Admin");
 
         }
+        public ActionResult City(int id)
+        {
+            var city = _schoolService.GetCityById(id);
+            if (city != null)
+            {
+                ViewBag.CityId = city.Id;
+                ViewBag.CityName = city.Name;
+                ViewBag.Status = city.IsVerified ? "ОДОБРЕНО" : "НЕОДОБРЕНО";
+                ViewBag.IsVerified = city.IsVerified;
+                return View();
+            }
+            return RedirectToAction("Cities", "Admin");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateCity(string name)
+        {
+            name = name.Trim();
+            var city = new City()
+            {
+                Name = name,
+                IsVerified = true
+            };
+            _schoolService.AddCity(city);
+            return Json(new { status = "OK" });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ConfirmCity(int cityId)
+        {
+            var city = _schoolService.GetCityById(cityId);
+            if (city != null)
+            {
+                _schoolService.VerifyCityById(city.Id);
+                return Json(new { status = "OK" });
+            }
+            return Json(new { status = "ERR" });
+        }
+        public ActionResult GetCities()
+        {
+            var cities = _schoolService.GetAllCities();
+            return Json(new { status = "OK", cities = cities.Select(x => new { id = x.Id, name = x.Name, status = x.IsVerified?"Одобрено":"Неодобрено",cityUrl= "/admin/city?id=" + x.Id }) }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetSchoolsInCity(int cityId)
+        {
+            var schools = _schoolService.GetSchoolsByCityId(cityId);
+            return Json(new { status = "OK", schools = schools.Select(x => new { id = x.Id, schoolName = x.Name, city=x.City.Name, status=x.IsVerified?"Одобрено":"Неодобрено", schoolUrl = "/admin/school?id=" + x.Id }) }, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult SearchSchools(string schoolName = null, int status = 0, int cityId = 0)
         {
             var schools = _schoolService.SearchSchool(schoolName, cityId, status);
-            return Json(new { status = "OK", schools = schools.Select(x => new { schoolName = x.Name, status = x.IsVerified ? "Одобрен" : "Неодобрен", city = x.City.Name, schoolUrl = "/admin/school?id=" + x.Id }) }, JsonRequestBehavior.AllowGet);
+            return Json(new { status = "OK", schools = schools.Select(x => new { schoolName = x.Name, status = x.IsVerified ? "Одобрено" : "Неодобрено", city = x.City.Name, schoolUrl = "/admin/school?id=" + x.Id }) }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetSchoolRooms(int schoolId)
@@ -139,6 +189,55 @@ namespace MOFO.Controllers
                 return Json(new { status = "OK" });
             }
             return Json(new { status = "ERR" });
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MergeCity(int currentCityId, int mergeCityId)
+        {
+            var currentCity = _schoolService.GetCityById(currentCityId);
+            var mergeCity = _schoolService.GetCityById(mergeCityId);
+            if (currentCity != null && mergeCity != null)
+            {
+                var mergeCitySchools = _schoolService.GetSchoolsByCityId(mergeCityId);
+                if (mergeCitySchools != null)
+                {
+                    foreach (var school in mergeCitySchools)
+                    {
+                        school.City = currentCity;
+                        _roomService.SaveChanges();
+                    }
+                }
+                _schoolService.RemoveCity(mergeCity);
+                return Json(new { status = "OK" });
+            }
+            return Json(new { status = "ERR" });
+        }
+        public ActionResult SearchCitiesModal(string query, int currentCityId)
+        {
+            var result = new List<object>();
+            var currentCity = _schoolService.GetCityById(currentCityId);
+            if (!string.IsNullOrEmpty(query))
+            {
+                query = query.Trim();
+                var newQuery = query.ToLower();
+                var cities = _schoolService.SearchCity(newQuery, 2);
+                cities.Remove(currentCity);
+                foreach (var city in cities)
+                {
+                    result.Add(new { id = city.Id, text = city.Name });
+                }
+            }
+            else
+            {
+                var cities = _schoolService.SearchCity("", 2);
+                cities.Remove(currentCity);
+                foreach (var city in cities)
+                {
+                    result.Add(new { id = city.Id, text = city.Name });
+                }
+            }
+            return Json(new { results = result }, JsonRequestBehavior.AllowGet);
 
         }
         public ActionResult SearchCities(string cityName = null, int status = 0)
