@@ -153,6 +153,10 @@ function RegisterTeacherViewModel() {
         $("#schoolName").val($('#schoolSelect').val());
     });
 
+    $('#schoolSelect').prop('disabled', true);
+    $('#citySelect').on('select2:select', function (e) {
+        $('#schoolSelect').prop('disabled', false);
+    });
 }
 var vm = new RegisterTeacherViewModel();
 ko.applyBindings(vm);

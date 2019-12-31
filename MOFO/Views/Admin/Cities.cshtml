@@ -35,7 +35,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <button class="btn btn-primary form-control" data-bind="click: clearForm">Сливане на населени места</button>
+                                <button class="btn btn-primary form-control" data-bind="click: openMergeModal">Сливане на населени места</button>
                             </div>
                         </div>
                         <div class="col-md-6 d-md-block d-none">
@@ -43,7 +43,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <button class="btn btn-success form-control" data-bind="click: clearForm">+ Добавяне на населено място</button>
+                                <button class="btn btn-success form-control" data-bind="click: createNewCity">+ Добавяне на населено място</button>
                             </div>
                         </div>
                     </div>
@@ -71,11 +71,58 @@
                             </table>
                         </div>
                     </div>
+
+                    <!--ko with: addCityModal-->
+                    <div class="modal fade" id="addCityModal" data-bind="css: modalCss">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header" data-bind="text: modalHeader"></div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Име на населеното място" data-bind="value: name, css: name.validClass" />
+                                        <div class="invalid-feedback" data-bind="visible: name.isInvalid, text: name.message">
+                                            Please provide a valid informations.
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Затвори</button>
+                                        <button type="button" class="btn btn-primary" id="saveBtn" data-bind="click: saveChanges, text: saveBtnText">Добави</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/ko-->
+                    <!--ko with: mergeCityModal-->
+                    <div class="modal fade" id="mergeCityModal" data-bind="css: modalCss">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header" data-bind="text: modalHeader"></div>
+                                <div class="modal-body">
+                                    <span>Сливане на населено място:</span>
+                                    <select id="citySelect" style="width:100%"></select>
+                                    <span>В населено място:</span>
+                                    <select id="mergeSelect" style="width: 100%"></select>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Отказ</button>
+                                        <button type="button" class="btn btn-success" id="saveBtn" data-bind="click: saveChanges, text: saveBtnText"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/ko-->
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
 @section AddToScript{
-@Scripts.Render("~/Scripts/app/admin/citiesViewModel.js")
+    @Scripts.Render("~/Scripts/app/admin/citiesViewModel.js")
 }
