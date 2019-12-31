@@ -33,6 +33,11 @@ namespace MOFO.Services
             _roomRepository.Add(room);
             _roomRepository.SaveChanges();
         }
+        public void RemoveRoom(Room room)
+        {
+            _roomRepository.Remove(room);
+            _roomRepository.SaveChanges();
+        }
         public void SaveChanges()
         {
             _roomRepository.SaveChanges();

@@ -13,6 +13,7 @@ namespace MOFO.Services.Contracts
         Room GetRoomByDeskCode(string deskCode);
         Room GetRoomById(int roomId);
         List<Room> GetRoomsBySchool(int schoolId);
+        void RemoveRoom(Room room);
         void SaveChanges();
     }
 }

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace MOFO.Services.Contracts
 {
-   public interface ICardService
+    public interface ICardService
     {
-
+        List<Card> GetCardsByRoomId(int roomId);
     }
 }

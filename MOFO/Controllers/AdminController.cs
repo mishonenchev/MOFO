@@ -14,11 +14,13 @@ namespace MOFO.Controllers
         private readonly ISchoolService _schoolService;
         private readonly IModeratorService _moderatorService;
         private readonly IRoomService _roomService;
-        public AdminController(ISchoolService schoolService, IModeratorService moderatorService, IRoomService roomService)
+        private readonly ICardService _cardService;
+        public AdminController(ISchoolService schoolService, IModeratorService moderatorService, IRoomService roomService, ICardService cardService)
         {
             _schoolService = schoolService;
             _moderatorService = moderatorService;
             _roomService = roomService;
+            _cardService = cardService;
         }
         // GET: Admin
         public ActionResult Index()
@@ -209,6 +211,20 @@ namespace MOFO.Controllers
                     }
                 }
                 _schoolService.RemoveCity(mergeCity);
+                return Json(new { status = "OK" });
+            }
+            return Json(new { status = "ERR" });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteRoom (int roomId)
+        {
+            var room = _roomService.GetRoomById(roomId);
+            if (room != null)
+            {
+                room.Cards.Clear();
+                _roomService.SaveChanges();
+                _roomService.RemoveRoom(room);
                 return Json(new { status = "OK" });
             }
             return Json(new { status = "ERR" });

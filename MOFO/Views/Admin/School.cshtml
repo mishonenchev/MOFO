@@ -5,11 +5,11 @@
 }
 @section AddToHead{
     <style>
-        .nav-pills .nav-link.active{
-            background-color:rgb(22, 163, 184);
+        .nav-pills .nav-link.active {
+            background-color: rgb(22, 163, 184);
         }
     </style>
-    }
+}
 
 @if (ViewBag.IsVerified == false)
 {
@@ -149,6 +149,30 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Отказ</button>
                     <button type="button" class="btn btn-success" id="saveBtn" data-bind="click: confirmSchool">Потвърждаване</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ko-->
+<!--ko with: confirmRoomDeleteModal-->
+<div class="modal fade modal-danger" id="confirmRoomDeleteModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">Изтриване на стая</div>
+            <div class="modal-body">
+                <p><b>Сигурни ли сте, че искате да изтриете <span data-bind="text: roomName"></span>?</b></p>
+                <p>Това ще направи всички карти, които принадлежат към тази стая неактивни, докато не бъдат регистрирани към друга стая. </p>
+                <p>Напишете ИЗТРИВАНЕ в полето по-долу, за да потвърдите: </p>
+                <div class="form-group">
+                    <input class="form-control" placeholder="" data-bind="value: confirmInput, css: confirmInput.validClass" />
+                    <div class="invalid-feedback" data-bind="visible: confirmInput.isInvalid, text: confirmInput.message">
+                        Please provide a valid informations.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Отказ</button>
+                    <button type="button" class="btn btn-danger" id="saveBtn" data-bind="click: confirmDelete">Потвърждаване</button>
                 </div>
             </div>
         </div>

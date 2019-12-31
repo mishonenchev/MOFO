@@ -46,6 +46,7 @@
     self.roomEditModal = ko.observable();
     self.infoEditModal = ko.observable();
     self.confirmSchoolModal = ko.observable();
+    self.confirmRoomDeleteModal = ko.observable(); 
     function RoomEditModal(isEdit) {
         var self = this;
         self.id = ko.observable();
@@ -122,6 +123,15 @@
             self.saveBtnText("Добавяне");
         }
         self.deleteClass = function () {
+
+            var dvm = new ConfirmRoomDeleteModal();
+            dvm.roomId(self.id());
+            dvm.roomName(self.name());
+            ConfirmDeleteRoomAddViewModel(dvm);
+            $("#confirmRoomDeleteModal").addClass("in");
+            $("#confirmRoomDeleteModal").attr("style", "display: block");
+            $("body").addClass("modal-open");
+
             //open modal for confirmation
         }
         self.name.subscribe(function () {
@@ -177,6 +187,43 @@
     function InfoEditModal() {
 
     }
+    function ConfirmRoomDeleteModal() {
+        var self = this;
+        self.roomName = ko.observable();
+        self.roomId = ko.observable();
+        self.confirmInput = ko.observable().extend({ addSubObservables: true });
+        self.confirmDelete = function () {
+            if (self.confirmInput()!=undefined&&self.confirmInput().toLowerCase() === "изтриване") {
+                var form = $('#__AjaxAntiForgeryForm');
+                var token = $('input[name="__RequestVerificationToken"]', form).val();
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/admin/DeleteRoom",
+                    data: {
+                        roomId: self.roomId(),
+                        __RequestVerificationToken: token
+                    },
+                    success: function (data) {
+                        if (data.status == "OK") {
+                            $("#confirmRoomDeleteModal").removeClass("in");
+                            $("#confirmRoomDeleteModal").attr("style", "display: none");
+                            $("#roomEditModal").removeClass("in");
+                            $("#roomEditModal").attr("style", "display: none");
+                            $("body").removeClass("modal-open");
+                            loadRooms();
+                        }
+                    }
+                });
+            } else {
+                invalid(self.confirmInput, "Изпишете думата ИЗТРИВАНЕ в полето");
+            }
+        }
+        self.closeBtn = function () {
+            $("#confirmRoomDeleteModal").removeClass("in");
+            $("#confirmRoomDeleteModal").attr("style", "display: none");
+        }
+    }
     function switchViews() {
         $("#room-section").toggleClass("d-none");
         $("#room-link").toggleClass("active");
@@ -201,6 +248,9 @@
                 }
             }
         });
+    }
+    function ConfirmDeleteRoomAddViewModel(vm) {
+        self.confirmRoomDeleteModal(vm);
     }
     function loadInfo() {
         $.ajax({
