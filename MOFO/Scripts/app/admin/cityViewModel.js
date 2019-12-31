@@ -1,11 +1,9 @@
 ﻿function CityViewModel() {
     var self = this;
     self.getSchools = function () {
-        switchViews();
         loadSchools();
     };
     self.getCities = function () {
-        switchViews();
         loadCities();
 
     };
@@ -167,12 +165,6 @@
             $("#confirmCityModal").attr("style", "display: none");
             $("body").removeClass("modal-open");
         };
-    }
-    function switchViews() {
-        $("#schools-section").toggleClass("d-none");
-        $("#schools-link").toggleClass("active");
-        $("#cities-link").toggleClass("active");
-        $("#cities-section").toggleClass("d-none");
     }
     function loadCities() {
         $.ajax({

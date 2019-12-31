@@ -23,20 +23,19 @@
             <small>Статус:</small>
             <h5><strong>@ViewBag.Status</strong></h5>
         </div>
-
+        <div class="card-right">
+             <button class="btn btn-light">Редактиране</button>
+        </div>
     </div>
 </div>
 
 <ul class="nav nav-pills nav-fill" style="background: white">
     <li class="nav-item">
-        <a id="schools-link" class="nav-link" href="" data-bind="click: getSchools">Училища</a>
-    </li>
-    <li class="nav-item">
-        <a id="cities-link" class="nav-link active" href="" data-bind="click: getCities">Градове</a>
+        <a id="schools-link" class="nav-link active" href="" data-bind="click: getSchools">Училища</a>
     </li>
 </ul>
 
-<div id="schools-section" class="d-none">
+<div id="schools-section">
 
     <!--ko if: schools().length==0-->
     <div class="flex-row align-items-center">
@@ -83,45 +82,6 @@
     <!--/ko-->
 
 </div>
-<div class="container-fluid">
-    <div id="cities-section" style="display: block;background: white none repeat scroll 0% 0%;" class="mt-3">
-        <ol class="breadcrumb mt-3">
-            <li class="breadcrumb-item d-md-down-none">
-                <div class="btn-group" role="group">
-                    <button class="btn btn-success" data-bind="click: openMergeModal">Сливане на градове</button>
-                </div>
-            </li>
-            <li class="breadcrumb-menu d-md-down-none">
-                <div class="btn-group" role="group">
-                    <button class="btn btn-success" data-bind="click: createNewCity">Добави град</button>
-                </div>
-            </li>
-        </ol>
-        <div class="row">
-            <div class="col-12">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Име на населено място</th>
-                            <th>Статус</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-bind="foreach: cities">
-                        <tr>
-                            <td data-bind="text: id"></td>
-                            <td data-bind="text: name"></td>
-                            <td data-bind="text: status"</td>
-                            <td><a class="btn btn-primary" target="_parent" data-bind="attr:{href: cityUrl}">Детайли</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!--ko with: addCityModal-->
 <div class="modal fade" id="addCityModal" data-bind="css: modalCss">
     <div class="modal-dialog" role="document">
