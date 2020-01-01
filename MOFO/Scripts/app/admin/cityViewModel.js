@@ -3,10 +3,6 @@
     self.getSchools = function () {
         loadSchools();
     };
-    self.getCities = function () {
-        loadCities();
-
-    };
     self.openConfirmModal = function () {
         var vm = new ConfirmCityModal();
         self.confirmCityModal(vm);
@@ -15,80 +11,24 @@
         $("#confirmCityModal").scrollTop(0);
         $("body").addClass("modal-open");
     };
-    self.createNewCity = function () {
-        var vm = new AddCityModal();
-        self.addCityModal(vm);
-        $("#addCityModal").addClass("in");
-        $("#addCityModal").attr("style", "display: block");
-        $("#addCityModal").scrollTop(0);
+    self.openEditModal = function () {
+        var vm = new EditCityModal();
+        self.editCityModal(vm);
+        $("#editCityModal").addClass("in");
+        $("#editCityModal").attr("style", "display: block");
+        $("#editCityModal").scrollTop(0);
         $("body").addClass("modal-open");
     };
-    self.openMergeModal = function () {
-        var vm = new MergeCityModal();
-        self.mergeCityModal(vm);
-        $("#mergeCityModal").addClass("in");
-        $("#mergeCityModal").attr("style", "display: block");
-        $("#mergeCityModal").scrollTop(0);
-        $("body").addClass("modal-open");
-
-        $('#citySelect').select2({
-            ajax: {
-                url: window.location.protocol + "//" + window.location.host + "/admin/searchCitiesModal",
-                data: function (params) {
-                    var query = {
-                        query: params.term,
-                        currentCityId: cityId
-                    };
-                    return query;
-                }
-            },
-            placeholder: "Населено място"
-        });
-    };
+    
     self.confirmCityModal = ko.observable();
-    self.addCityModal = ko.observable();
-    self.mergeCityModal = ko.observable();
+    self.editCityModal = ko.observable();
 
-    function MergeCityModal() {
-        var self = this;
-        self.modalCss = ko.observable("modal-success");
-        self.modalHeader = ko.observable("Сливане на населено място");
-        self.saveBtnText = ko.observable("Сливане");
-        self.saveChanges = function () {
-            var form = $('#__AjaxAntiForgeryForm');
-            var token = $('input[name="__RequestVerificationToken"]', form).val();
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                url: "/admin/MergeCity",
-                data: {
-                    currentCityId: cityId,
-                    mergeCityId: $("#mergeCityModal").find("#citySelect").val(),
-                    __RequestVerificationToken: token
-                },
-                success: function (data) {
-                    if (data.status === "OK") {
-                        $("#mergeCityModal").removeClass("in");
-                        $("#mergeCityModal").attr("style", "display: none");
-                        $("body").removeClass("modal-open");
-                        refresh();
-                    }
-                }
-            });
-        };
-
-        self.closeBtn = function () {
-            $("#mergeCityModal").removeClass("in");
-            $("#mergeCityModal").attr("style", "display: none");
-            $("body").removeClass("modal-open");
-        };
-    }
-    function AddCityModal() {
+    function EditCityModal() {
         var self = this;
         self.id = ko.observable();
         self.modalCss = ko.observable("modal-success");
-        self.modalHeader = ko.observable("Добавяне на населено място");
-        self.saveBtnText = ko.observable("Добавяне");
+        self.modalHeader = ko.observable("Редактиране на населено място");
+        self.saveBtnText = ko.observable("Запази");
         self.checkView = function () {
             self.name.validate();
             return !self.name.isInvalid();
@@ -101,17 +41,18 @@
                 $.ajax({
                     type: "POST",
                     dataType: "json",
-                    url: "/admin/CreateCity",
+                    url: "/admin/EditCity",
                     data: {
+                        cityId: cityId,
                         name: self.name(),
                         __RequestVerificationToken: token
                     },
                     success: function (data) {
                         if (data.status === "OK") {
-                            $("#addCityModal").removeClass("in");
-                            $("#addCityModal").attr("style", "display: none");
+                            $("#editCityModal").removeClass("in");
+                            $("#editCityModal").attr("style", "display: none");
                             $("body").removeClass("modal-open");
-                            refresh();
+                            location.reload();
                         }
                     }
                 });
@@ -119,8 +60,8 @@
         };
 
         self.closeBtn = function () {
-            $("#addCityModal").removeClass("in");
-            $("#addCityModal").attr("style", "display: none");
+            $("#editCityModal").removeClass("in");
+            $("#editCityModal").attr("style", "display: none");
             $("body").removeClass("modal-open");
         };
     
@@ -166,22 +107,6 @@
             $("body").removeClass("modal-open");
         };
     }
-    function loadCities() {
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            contentType: "application/json",
-            url: "/admin/GetCities",
-            success: function (data) {
-                if (data.status === "OK") {
-                    self.cities.removeAll();
-                    for (var i in data.cities) {
-                        self.cities.push(data.cities[i]);
-                    }
-                }
-            }
-        });
-    }
     function loadSchools() {
         $.ajax({
             type: "GET",
@@ -201,13 +126,7 @@
             }
         });
     }
-    self.cities = ko.observableArray();
     self.schools = ko.observableArray();
-    function refresh() {
-        loadSchools();
-        loadCities();
-    }
-    
 }
 var vm = new CityViewModel();
 ko.applyBindings(vm);

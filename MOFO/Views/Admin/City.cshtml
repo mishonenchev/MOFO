@@ -24,7 +24,7 @@
             <h5><strong>@ViewBag.Status</strong></h5>
         </div>
         <div class="card-right">
-             <button class="btn btn-light">Редактиране</button>
+            <button class="btn btn-light" data-bind="click: openEditModal">Редактиране</button>
         </div>
     </div>
 </div>
@@ -82,28 +82,6 @@
     <!--/ko-->
 
 </div>
-<!--ko with: addCityModal-->
-<div class="modal fade" id="addCityModal" data-bind="css: modalCss">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header" data-bind="text: modalHeader"></div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <input class="form-control" placeholder="Име на населеното място" data-bind="value: name, css: name.validClass" />
-                    <div class="invalid-feedback" data-bind="visible: name.isInvalid, text: name.message">
-                        Please provide a valid informations.
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Затвори</button>
-                    <button type="button" class="btn btn-primary" id="saveBtn" data-bind="click: saveChanges, text: saveBtnText">Добави</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!--/ko-->
 <!--ko with: confirmCityModal-->
 <div class="modal fade modal-warning" id="confirmCityModal">
     <div class="modal-dialog" role="document">
@@ -122,16 +100,22 @@
     </div>
 </div>
 <!--/ko-->
-<!--ko with: mergeCityModal-->
-<div class="modal fade" id="mergeCityModal" data-bind="css: modalCss">
+<!--ko with: editCityModal-->
+<div class="modal fade" id="editCityModal" data-bind="css: modalCss">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header" data-bind="text: modalHeader"></div>
             <div class="modal-body">
-                <select id="citySelect" style="width:100%"></select>
+                <div class="form-group">
+                    <input class="form-control" placeholder="Име на населеното място" data-bind="value: name, css: name.validClass" />
+                    <div class="invalid-feedback" data-bind="visible: name.isInvalid, text: name.message">
+                        Please provide a valid informations.
+                    </div>
+                </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Отказ</button>
-                    <button type="button" class="btn btn-success" id="saveBtn" data-bind="click: saveChanges, text: saveBtnText"></button>
+                    <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Затвори</button>
+                    <button type="button" class="btn btn-primary" id="saveBtn" data-bind="click: saveChanges, text: saveBtnText">Добави</button>
                 </div>
             </div>
         </div>

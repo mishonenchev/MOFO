@@ -181,6 +181,20 @@ namespace MOFO.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public ActionResult EditCity(int cityId, string name)
+        {
+            var city = _schoolService.GetCityById(cityId);
+            if (city != null)
+            {
+                city.Name = name;
+                _roomService.SaveChanges();
+                return Json(new { status = "OK" });
+
+            }
+            return Json(new { status = "ERR" });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ConfirmSchool(int schoolId)
         {
             var school = _schoolService.GetSchoolById(schoolId);
@@ -199,7 +213,7 @@ namespace MOFO.Controllers
         {
             var currentCity = _schoolService.GetCityById(currentCityId);
             var mergeCity = _schoolService.GetCityById(mergeCityId);
-            if (currentCity != null && mergeCity != null)
+            if (currentCity != null && mergeCity != null && currentCityId!=mergeCityId)
             {
                 var mergeCitySchools = _schoolService.GetSchoolsByCityId(mergeCityId);
                 if (mergeCitySchools != null)
@@ -230,15 +244,20 @@ namespace MOFO.Controllers
             return Json(new { status = "ERR" });
         }
         public ActionResult SearchCitiesModal(string query, int currentCityId)
+        public ActionResult SearchCitiesModal(string query, int status, int? exclusionId = null)
         {
             var result = new List<object>();
-            var currentCity = _schoolService.GetCityById(currentCityId);
+            
             if (!string.IsNullOrEmpty(query))
             {
                 query = query.Trim();
                 var newQuery = query.ToLower();
-                var cities = _schoolService.SearchCity(newQuery, 2);
-                cities.Remove(currentCity);
+                var cities = _schoolService.SearchCity(newQuery, status);
+                if (exclusionId != null)
+                {
+                    var city = _schoolService.GetCityById(exclusionId.Value);
+                    cities.Remove(city);
+                }
                 foreach (var city in cities)
                 {
                     result.Add(new { id = city.Id, text = city.Name });
@@ -246,12 +265,17 @@ namespace MOFO.Controllers
             }
             else
             {
-                var cities = _schoolService.SearchCity("", 2);
-                cities.Remove(currentCity);
+                var cities = _schoolService.SearchCity("", status);
+                if (exclusionId != null)
+                {
+                    var city = _schoolService.GetCityById(exclusionId.Value);
+                    cities.Remove(city);
+                }
                 foreach (var city in cities)
                 {
                     result.Add(new { id = city.Id, text = city.Name });
                 }
+                
             }
             return Json(new { results = result }, JsonRequestBehavior.AllowGet);
 
