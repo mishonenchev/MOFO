@@ -243,7 +243,6 @@ namespace MOFO.Controllers
             }
             return Json(new { status = "ERR" });
         }
-        public ActionResult SearchCitiesModal(string query, int currentCityId)
         public ActionResult SearchCitiesModal(string query, int status, int? exclusionId = null)
         {
             var result = new List<object>();

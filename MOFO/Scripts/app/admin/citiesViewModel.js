@@ -169,4 +169,5 @@
     }
 }
 var vm = new CitiesViewModel();
+vm.search();
 ko.applyBindings(vm);

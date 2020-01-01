@@ -43,4 +43,5 @@
     $("#filterSelect").select2();
 }
 var vm = new SchoolsViewModel();
+vm.search();
 ko.applyBindings(vm);
