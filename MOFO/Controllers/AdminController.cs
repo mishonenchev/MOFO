@@ -243,6 +243,7 @@ namespace MOFO.Controllers
             }
             return Json(new { status = "ERR" });
         }
+        [HttpGet]
         public ActionResult SearchCitiesModal(string query, int status, int? exclusionId = null)
         {
             var result = new List<object>();
@@ -279,6 +280,7 @@ namespace MOFO.Controllers
             return Json(new { results = result }, JsonRequestBehavior.AllowGet);
 
         }
+        [HttpGet]
         public ActionResult SearchCities(string cityName = null, int status = 0)
         {
             var cities = _schoolService.SearchCity(cityName, status);

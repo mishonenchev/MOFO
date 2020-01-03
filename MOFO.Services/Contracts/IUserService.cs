@@ -17,5 +17,6 @@ namespace MOFO.Services.Contracts
         void Update();
         bool IsTelephoneValid(string telephone);
         User GetUserByUserId(string userId);
+        void SaveChanges();
     }
 }

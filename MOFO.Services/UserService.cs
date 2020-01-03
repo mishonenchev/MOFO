@@ -88,6 +88,10 @@ namespace MOFO.Services
         {
             return _userRepository.WhereIncludeAll(x => x.AspUserId == userId).FirstOrDefault();
         }
+        public void SaveChanges()
+        {
+            _userRepository.SaveChanges();
+        }
         public void Update()
         {
             _userRepository.SaveChanges();

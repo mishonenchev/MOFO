@@ -21,7 +21,7 @@
             <div class="col-md-6">
                 <div class="card mx-4">
                     <div class="card-body p-4">
-                        @using (Html.BeginForm("RegisterStudent", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form", @onSubmit = "return vm.checkView()" }))
+                        @using (Html.BeginForm("RegisterStudent", "Account", new { ReturnUrl = ViewBag.ReturnUrl, AuthGet = ViewBag.AuthGet }, FormMethod.Post, new { role = "form", @onSubmit = "return vm.checkView()" }))
                         {
 
                             @Html.AntiForgeryToken()

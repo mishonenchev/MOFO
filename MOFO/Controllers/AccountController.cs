@@ -63,13 +63,37 @@ namespace MOFO.Controllers
                 _userManager = value;
             }
         }
+        [HttpGet]
+        [AllowAnonymous]
+        public JsonResult GetAuthKey()
+        {
+            var user = _userService.GetUserByUserId(User.Identity.GetUserId());
+            if (user != null)
+            {
+                if (user.Auth == null)
+                {
+                    user.Auth = _userService.NewAuthString();
+                }
+                _userService.SaveChanges();
+                return Json(new { status = "OK", auth = user.Auth }, JsonRequestBehavior.AllowGet);
 
+            }
+
+            return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult EmptyResult()
+        {
+            return new EmptyResult();
+        }
         //
         // GET: /Account/Login
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public ActionResult Login(string returnUrl, bool authget = false)
         {
             ViewBag.ReturnUrl = returnUrl;
+            ViewBag.AuthGet = authget;
             return View();
         }
 
@@ -78,7 +102,7 @@ namespace MOFO.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, bool authget=false)
         {
             if (!ModelState.IsValid)
             {
@@ -91,6 +115,11 @@ namespace MOFO.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    if (authget)
+                    {
+                        return RedirectToAction("EmptyResult");
+                    }
+                    else
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -154,13 +183,15 @@ namespace MOFO.Controllers
             return View();
         }
         [AllowAnonymous]
-        public ActionResult RegisterTeacher()
+        public ActionResult RegisterTeacher(bool authget=false)
         {
+            ViewBag.AuthGet = authget;
             return View();
         }
         [AllowAnonymous]
-        public ActionResult RegisterStudent()
+        public ActionResult RegisterStudent(bool authget=false)
         {
+            ViewBag.AuthGet = authget;
             return View();
         }
 
@@ -169,7 +200,7 @@ namespace MOFO.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterStudent(RegisterStudentViewModel model)
+        public async Task<ActionResult> RegisterStudent(RegisterStudentViewModel model, bool authget = false)
         {
             if (ModelState.IsValid)
             {
@@ -207,6 +238,10 @@ namespace MOFO.Controllers
                                 User = _user
                             });
                             await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                            if (authget)
+                            {
+                                return RedirectToAction("EmptyResult");
+                            }
                             return RedirectToAction("Index", "Home");
                         }
                         AddErrors(result);
@@ -224,7 +259,7 @@ namespace MOFO.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterTeacher(RegisterTeacherViewModel model)
+        public async Task<ActionResult> RegisterTeacher(RegisterTeacherViewModel model, bool authget = false)
         {
             if (ModelState.IsValid)
             {
@@ -268,6 +303,10 @@ namespace MOFO.Controllers
                         
                     });
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    if (authget)
+                    {
+                        return RedirectToAction("EmptyResult");
+                    }
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
