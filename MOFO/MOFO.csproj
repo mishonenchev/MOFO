@@ -214,6 +214,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\app\admin\cardsViewModel-1.0.0.js" />
     <Content Include="Scripts\app\admin\citiesViewModel.js" />
     <Content Include="Scripts\app\admin\cityViewModel.js" />
     <Content Include="Scripts\app\admin\schoolsViewModel-1.0.0.js" />
@@ -279,6 +280,7 @@
     <Content Include="Views\Admin\Cities.cshtml" />
     <Content Include="Views\Admin\School.cshtml" />
     <Content Include="Views\Admin\City.cshtml" />
+    <Content Include="Views\Admin\Cards.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -307,6 +309,10 @@
     <ProjectReference Include="..\MOFO.Database\MOFO.Database.csproj">
       <Project>{3c0186a0-c4c7-4137-b617-64cd6346ec95}</Project>
       <Name>MOFO.Database</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MOFO.DataProcessing\MOFO.DataProcessing.csproj">
+      <Project>{9ccda219-8f3e-4cfa-b669-4a22e32f7fdf}</Project>
+      <Name>MOFO.DataProcessing</Name>
     </ProjectReference>
     <ProjectReference Include="..\MOFO.Models\MOFO.Models.csproj">
       <Project>{45cd8868-8b1e-4e79-a294-289f6cbd68ef}</Project>

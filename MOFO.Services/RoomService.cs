@@ -20,6 +20,10 @@ namespace MOFO.Services
         {
             return _roomRepository.WhereIncludeAll(x => x.Cards.Any(y => y.Code == deskCode) == true).FirstOrDefault();
         }
+        public Room GetRoomByDeskQRCode(string deskCode)
+        {
+            return _roomRepository.WhereIncludeAll(x => x.Cards.Any(y => y.QRCode == deskCode) == true).FirstOrDefault();
+        }
         public List<Room> GetRoomsBySchool(int schoolId)
         {
             return _roomRepository.WhereIncludeAll(x => x.School.Id == schoolId).ToList();

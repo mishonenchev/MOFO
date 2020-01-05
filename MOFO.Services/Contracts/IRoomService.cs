@@ -12,6 +12,7 @@ namespace MOFO.Services.Contracts
         void AddRoom(Room room);
         Room GetRoomByDeskCode(string deskCode);
         Room GetRoomById(int roomId);
+        Room GetRoomByDeskQRCode(string deskCode);
         List<Room> GetRoomsBySchool(int schoolId);
         void RemoveRoom(Room room);
         void SaveChanges();

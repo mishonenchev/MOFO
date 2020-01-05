@@ -1,4 +1,6 @@
-﻿using MOFO.Models;
+﻿using MOFO.DataProcessing;
+using MOFO.DataProcessing.Contracts;
+using MOFO.Models;
 using MOFO.Services.Contracts;
 using System;
 using System.Collections.Generic;
@@ -15,12 +17,14 @@ namespace MOFO.Controllers
         private readonly IModeratorService _moderatorService;
         private readonly IRoomService _roomService;
         private readonly ICardService _cardService;
-        public AdminController(ISchoolService schoolService, IModeratorService moderatorService, IRoomService roomService, ICardService cardService)
+        private readonly IPdfBuilder _pdfBuilder;
+        public AdminController(ISchoolService schoolService, IModeratorService moderatorService, IRoomService roomService, ICardService cardService, IPdfBuilder pdfBuilder)
         {
             _schoolService = schoolService;
             _moderatorService = moderatorService;
             _roomService = roomService;
             _cardService = cardService;
+            _pdfBuilder = pdfBuilder;
         }
         // GET: Admin
         public ActionResult Index()
@@ -32,6 +36,11 @@ namespace MOFO.Controllers
             return View();
         }
         public ActionResult Cities()
+        {
+            return View();
+        }
+        [HttpGet]
+        public ActionResult Cards()
         {
             return View();
         }
@@ -114,7 +123,150 @@ namespace MOFO.Controllers
             var schools = _schoolService.SearchSchool(schoolName, cityId, status);
             return Json(new { status = "OK", schools = schools.Select(x => new { schoolName = x.Name, status = x.IsVerified ? "Одобрено" : "Неодобрено", city = x.City.Name, schoolUrl = "/admin/school?id=" + x.Id }) }, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult SearchSchoolSelect(string query = null, int cityId = 0)
+        {
+            var schools = _schoolService.SearchSchool(query, cityId, 0);
+            return Json(new { results = schools.Select(x => new { id = x.Id, text = x.Name }) }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult SearchRoomSelect(string query = null, int schoolId = 0)
+        {
+            var rooms = _roomService.GetRoomsBySchool(schoolId);
+            if (!string.IsNullOrEmpty(query))
+            {
+                rooms = rooms.Where(x => x.Name.Contains(query)).ToList();
+            }
+            return Json(new { results = rooms.Select(x => new { id = x.Id, text = x.Name }) }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult SearchCards(string refNumber = null, int schoolId = 0, int roomId = 0, int cityId = 0)
+        {
+            List<Card> results = _cardService.SearchCards(refNumber, cityId, schoolId, roomId);
+            return Json(new { status = "OK", items = results.Select(x => new { refNumber = x.ReferenceNumber.ToString(), school = x.School.Name, city = x.School.City.Name, room = x.Room.Name, license = x.ValidBefore.ToString("dd.MM.yyyy") + " г.", licenseStatus = x.ValidBefore>DateTime.Now?"badge-success": "badge-danger", status = string.IsNullOrEmpty(x.Code) ? "Неактивена" : "Активна", isActive = !string.IsNullOrEmpty(x.Code) }) }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public JsonResult ValidateRefNumber(int refNumber)
+        {
+            var card = _cardService.GetCardByRefNumber(refNumber);
+            if (card != null)
+            {
+                return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult UpdateCardLicense(int period, string refNumber = null, int schoolId = 0, int roomId = 0, int cityId = 0)
+        {
+            var cards = _cardService.SearchCards(refNumber, cityId, schoolId, roomId);
+            foreach (var item in cards)
+            {
+                item.ValidBefore = item.ValidBefore.AddMonths(period * 6);
+                _roomService.SaveChanges();
+             
+            }
+            return Json(new { status = "OK" });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult EndCardLicense(string refNumber = null, int schoolId = 0, int roomId = 0, int cityId = 0)
+        {
+            var cards = _cardService.SearchCards(refNumber, cityId, schoolId, roomId);
+            foreach (var item in cards)
+            {
+                item.ValidBefore = DateTime.Now;
+                _roomService.SaveChanges();
 
+            }
+            return Json(new { status = "OK" });
+        }
+        [HttpGet]
+        public JsonResult ValidateCardCode(string code)
+        {
+            code = code.Trim();
+            code = code.ToLower();
+            var card = _cardService.GetCardByCode(code);
+            if (card != null)
+            {
+                return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateCards(int roomId, int license, int cardCount)
+        {
+            var room = _roomService.GetRoomById(roomId);
+            if (room != null)
+            {
+                for (int i = 0; i < cardCount; i++)
+                {
+                    var card = new Card()
+                    {
+                        QRCode = _cardService.GetNewQRCode(),
+                        ReferenceNumber = _cardService.GetReferenceNumber(),
+                        Role = UserRole.Student,
+                        School = room.School,
+                        Room = room,
+                        ValidBefore = DateTime.Now.AddMonths(license * 6)
+                    };
+                    _cardService.AddCard(card);
+                }
+                return Json(new { status = "OK" });
+            }
+            return Json(new { status = "ERR" });
+        }
+        [Authorize(Roles = "Admin")]
+        public JsonResult GeneratePdf(string refNumber = null, int schoolId = 0, int roomId = 0, int cityId = 0)
+        {
+
+            var cards = _cardService.SearchCards(refNumber, cityId, schoolId, roomId);
+            if (cards.Count>0)
+            {
+                var random = RandomSingleton.Instance;
+                string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                var fileName = "";
+                for (int i = 0; i < chars.Length; i++)
+                {
+                    fileName += chars[random.Next(0, chars.Length - 1)];
+                }
+                Session[fileName] = _pdfBuilder.GetCardsPdf(cards);
+                return Json(new { status = "OK", fName = fileName }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetFile(string path)
+        {
+            var file = Session[path] as FileContentResult;
+            if (file == null)
+            {
+                return new EmptyResult();
+            }
+            Session[path] = null;
+            return file;
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ActivateCard(int refNumber, string code)
+        {
+            code = code.Trim();
+            code = code.ToLower();
+            var card = _cardService.GetCardByRefNumber(refNumber);
+            if (card != null)
+            {
+                if (_cardService.GetCardByCode(code) == null)
+                {
+                    card.Code = code;
+                    _roomService.SaveChanges();
+                    return Json(new { status = "OK" });
+                }
+            }
+            return Json(new { status = "ERR" });
+        }
         public ActionResult GetSchoolRooms(int schoolId)
         {
             var rooms = _roomService.GetRoomsBySchool(schoolId);

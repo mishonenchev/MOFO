@@ -56,6 +56,11 @@ namespace MOFO.Services
             }
             _messageRepository.Add(messageObj);
             _sessionRepository.SaveChanges();
+            if (session.Messages != null)
+            {
+                session.Messages.Add(messageObj);
+            }
+            _sessionRepository.SaveChanges();
         }
         public void AddSession(Session session)
         {

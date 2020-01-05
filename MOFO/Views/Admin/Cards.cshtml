@@ -1,0 +1,218 @@
+﻿
+@{
+    ViewBag.Title = "Cards";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="p-3">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <input class="form-control" data-bind="value: refNumber" placeholder="Референтен номер" />
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select id="citySelect" class="form-control">
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select id="schoolSelect" class="form-control">
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select id="roomSelect" class="form-control">
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <button class="btn btn-secondary form-control" data-bind="click: clearForm">Изчисти</button>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <button class="btn btn-success form-control" data-bind="click: search">Търси</button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="d-md-none d-block" />
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <button class="btn btn-warning form-control" data-bind="click: openActivateCardModal">Активиране на карти</button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <button class="btn btn-secondary form-control" data-bind="click: printCards">Разпечатване на всички карти</button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <button class="btn btn-primary form-control" data-bind="click: licenseRenewModal">Обновяване на лиценза на всички карти</button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <button class="btn btn-success form-control" data-bind="click: createCardModal">+ Добавяне на карти</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Референтен номер</th>
+                                        <th>Училище</th>
+                                        <th>Град</th>
+                                        <th>Стая</th>
+                                        <th>Валидност</th>
+                                        <th>Статус</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!--ko foreach: cards-->
+                                    <tr>
+                                        <td data-bind="text: $index()+1">1</td>
+                                        <td><span data-bind="text: refNumber">ref 1001</span></td>
+                                        <td data-bind="text: school">ОМГ "Акад. Кирил Попов"</td>
+                                        <td data-bind="text: city">гр. Пловдив</td>
+                                        <td data-bind="text: room">стая 414</td>
+                                        <td><span class="badge" data-bind="css: licenseStatus, text: license"></span></td>
+                                        <td data-bind="text: status">Активна</td>
+                                        <td>
+                                            <button class="btn btn-danger mr-1" data-bind="click: $root.deleteCard">Изтриване</button>
+                                            <!--ko if: isActive==false-->
+                                            <button class="btn btn-warning mr-1" target="_parent" data-bind="click: $root.activateCard">Активиране</button>
+                                            <!--/ko-->
+                                        </td>
+                                    </tr>
+                                    <!--/ko-->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!--ko with: newCardModal-->
+                    <div class="modal fade modal-success" id="newCardModal">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">Добавяне на нови карти</div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <select class="form-control w-100" id="citySelectModal" style="width: 100%">
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select class="form-control w-100" id="schoolSelectModal" style="width: 100%">
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select class="form-control w-100" id="roomSelectModal" style="width: 100%">
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select class="form-control" id="licenseSelect">
+                                            <option id="0">Валидност</option>
+                                            <option id="1">6 месеца</option>
+                                            <option id="2">12 месеца</option>
+                                            <option id="3">18 месеца</option>
+                                            <option id="4">2 години</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Брой на картите от този вид" data-bind="numeric, value: cardCount, css: cardCount.validClass" />
+                                        <div class="invalid-feedback" data-bind="visible: cardCount.isInvalid, text: cardCount.message">
+                                            Please provide a valid informations.
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="invalid-feedback" data-bind="visible: validationProperty.isInvalid, text: validationProperty.message">
+                                            Please provide a valid informations.
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Затвори</button>
+                                        <button type="button" class="btn btn-primary" id="saveBtn" data-bind="click: generateCards">Генериране</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/ko-->
+                    <!--ko with: activateCardModal-->
+                    <div class="modal fade modal-warning" id="activateCardModal">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">Активиране на карти</div>
+                                <div class="modal-body">
+
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Референтен номер" data-bind="numeric, value: refNumber, css: refNumber.validClass" />
+                                        <div class="invalid-feedback" data-bind="visible: refNumber.isInvalid, text: refNumber.message">
+                                            Please provide a valid informations.
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Rfid код" data-bind="value: code, css: code.validClass" />
+                                        <div class="invalid-feedback" data-bind="visible: code.isInvalid, text: code.message">
+                                            Please provide a valid informations.
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Затвори</button>
+                                        <button type="button" class="btn btn-primary" id="saveBtn" data-bind="click: saveBtn">Активиране</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/ko-->
+                    <!--ko with: licenseModal-->
+                    <div class="modal fade modal-warning" id="licenseModal">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">Обновяване на лицензите на картите</div>
+                                <div class="modal-body">
+                                    <p>Изберете периода, с който искате да удължите валидността на избраните карти</p>
+                                    <div class="form-group">
+                                        <select class="form-control" id="licenseModalSelect">
+                                            <option id="0">Валидност</option>
+                                            <option id="1">6 месеца</option>
+                                            <option id="2">12 месеца</option>
+                                            <option id="3">18 месеца</option>
+                                            <option id="4">2 години</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-danger w-100" data-bind="click: endLicense">Прекратяване на валидността</button>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bind="click: closeBtn">Затвори</button>
+                                        <button type="button" class="btn btn-success" id="saveBtn" data-bind="click: saveBtn">Запази</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/ko-->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+@section AddToScript{
+    @Scripts.Render("~/admins/cards")
+}

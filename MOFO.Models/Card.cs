@@ -12,9 +12,11 @@ namespace MOFO.Models
         [Key]
         public int Id { get; set; }
         public string Code { get; set; }
+        public int ReferenceNumber { get; set; }
         public UserRole Role { get; set; }
         public User User { get; set; }
         public School School { get; set; }
+        public Room Room { get; set; }
         public string QRCode { get; set; }
         public DateTime ValidBefore { get; set; }
     }

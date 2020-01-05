@@ -13,41 +13,56 @@ namespace MOFO.Controllers
         private readonly IRoomService _roomService;
         private readonly IUserService _userService;
         private readonly ISessionService _sessionService;
-        public RoomController(IRoomService roomService, IUserService userService, ISessionService sessionService)
+        private readonly ICardService _cardService;
+        public RoomController(IRoomService roomService, IUserService userService, ISessionService sessionService, ICardService cardService)
         {
             _roomService = roomService;
             _userService = userService;
             _sessionService = sessionService;
+            _cardService = cardService;
         }
         [HttpPost]
         public JsonResult JoinRoom(string deskCode, string auth)
         {
-            var room = _roomService.GetRoomByDeskCode(deskCode);
+            Room room = null;
+            Card card = null;
+            if (deskCode.Length == 20)
+            {
+                room = _roomService.GetRoomByDeskQRCode(deskCode);
+                card = _cardService.GetCardByQRCode(deskCode);
+            }
+            else
+            {
+                room = _roomService.GetRoomByDeskCode(deskCode);
+                card = _cardService.GetCardByCode(deskCode);
+            }
             var user = _userService.GetUserByAuth(auth);
             if (user != null)
             {
-                if (room != null)
+                if (room != null&& card!=null)
                 {
-                    var deskInRoom = room.Cards.Where(x => x.Code == deskCode).First();
-                    if (!_sessionService.HasActiveSessionByRoom(room))
+                    if (card.ValidBefore > DateTime.Now)
                     {
-                        _sessionService.AddSession(new Session()
+                        if (!_sessionService.HasActiveSessionByRoom(room))
                         {
-                            Room = room,
-                            DateTimeCreated = DateTime.Now,
-                            DateTimeLastActive = DateTime.Now
-                        });
-                    }
-                    var previousUser = deskInRoom.User;
-                    if (previousUser != null && previousUser.Session != null)
-                    {
-                        previousUser.Session = null;
-                    }
-                    user.Session = _sessionService.GetSessionByRoom(room);
-                    room.Cards.Where(x => x.User != null && x.User.Id == user.Id).ToList().ForEach(y => y.User = null);
-                    deskInRoom.User = user;
-                    _userService.Update();
-                    return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
+                            _sessionService.AddSession(new Session()
+                            {
+                                Room = room,
+                                DateTimeCreated = DateTime.Now,
+                                DateTimeLastActive = DateTime.Now
+                            });
+                        }
+                        var previousUser = card.User;
+                        if (previousUser != null && previousUser.Session != null)
+                        {
+                            previousUser.Session = null;
+                        }
+                        user.Session = _sessionService.GetSessionByRoom(room);
+                        room.Cards.Where(x => x.User != null && x.User.Id == user.Id).ToList().ForEach(y => y.User = null);
+                        card.User = user;
+                        _userService.Update();
+                        return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
+                    }else return Json(new { status = "NO DESK" }, JsonRequestBehavior.AllowGet);
                 }
                 else return Json(new { status = "NO DESK" }, JsonRequestBehavior.AllowGet);
             }

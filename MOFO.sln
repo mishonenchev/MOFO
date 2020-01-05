@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.136
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MOFO", "MOFO\MOFO.csproj", "{CF710E30-BC7B-49AE-9B9B-042D3CBC0822}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MOFO.Database", "MOFO.Database\MOFO.Database.csproj", "{3C0186A0-C4C7-4137-B617-64CD6346EC95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MOFO.Services", "MOFO.Services\MOFO.Services.csproj", "{60E81B26-00A7-4141-BCA7-FF6395A4E5D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MOFO.DataProcessing", "MOFO.DataProcessing\MOFO.DataProcessing.csproj", "{9CCDA219-8F3E-4CFA-B669-4A22E32F7FDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{60E81B26-00A7-4141-BCA7-FF6395A4E5D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60E81B26-00A7-4141-BCA7-FF6395A4E5D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60E81B26-00A7-4141-BCA7-FF6395A4E5D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CCDA219-8F3E-4CFA-B669-4A22E32F7FDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CCDA219-8F3E-4CFA-B669-4A22E32F7FDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CCDA219-8F3E-4CFA-B669-4A22E32F7FDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CCDA219-8F3E-4CFA-B669-4A22E32F7FDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

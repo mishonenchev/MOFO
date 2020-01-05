@@ -35,6 +35,8 @@ namespace MOFO
                  "~/Scripts/app/admin/schoolsViewModel-{version}.js"));
             bundles.Add(new ScriptBundle("~/admins/school").Include(
                  "~/Scripts/app/admin/schoolViewModel-{version}.js"));
+            bundles.Add(new ScriptBundle("~/admins/cards").Include(
+                 "~/Scripts/app/admin/cardsViewModel-{version}.js"));
             bundles.Add(new ScriptBundle("~/app/inputValidation").Include(
                      "~/Scripts/inputValidation.js"));
 

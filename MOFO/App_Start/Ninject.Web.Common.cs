@@ -11,6 +11,8 @@ namespace MOFO.App_Start
     using MOFO.Database;
     using MOFO.Database.Contracts;
     using MOFO.Database.Repositories;
+    using MOFO.DataProcessing;
+    using MOFO.DataProcessing.Contracts;
     using MOFO.Services;
     using MOFO.Services.Contracts;
     using Ninject;
@@ -155,6 +157,10 @@ namespace MOFO.App_Start
                .Bind<IStudentService>()
                .To<StudentService>()
           .InRequestScope();
+            kernel
+              .Bind<IPdfBuilder>()
+              .To<PdfBuilder>()
+         .InRequestScope();
             kernel
          .BindFilter<VerificationRequiredAttribute>(FilterScope.Controller, 0);
         }        
