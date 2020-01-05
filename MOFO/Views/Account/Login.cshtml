@@ -28,15 +28,15 @@
                                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                 <h1>Вход</h1>
                                 <p class="text-muted">Влезте в своя акаунт</p>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-addon">
+                                <div class="form-group mb-3">
+                                    <span class="form-group-addon">
                                         <i class="icon-user"></i>
                                     </span>
                                     @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Имейл" })
                                     @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                                 </div>
-                                <div class="input-group mb-4">
-                                    <span class="input-group-addon">
+                                <div class="form-group mb-4">
+                                    <span class="form-group-addon">
                                         <i class="icon-lock"></i>
                                     </span>
                                     @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Парола" })
