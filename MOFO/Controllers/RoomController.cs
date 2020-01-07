@@ -3,8 +3,11 @@ using MOFO.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hangfire;
 using System.Web;
 using System.Web.Mvc;
+using Google.Cloud.Storage.V1;
+using System.IO;
 
 namespace MOFO.Controllers
 {
@@ -49,8 +52,16 @@ namespace MOFO.Controllers
                             {
                                 Room = room,
                                 DateTimeCreated = DateTime.Now,
-                                DateTimeLastActive = DateTime.Now
+                                DateTimeLastActive = DateTime.Now,
+                                 IsActive =true
                             });
+                            var sessionHistory = new SessionHistory()
+                            {
+                                StartDateTime = DateTime.Now,
+                                FinishDateTime = DateTime.Now,
+                                Room = room
+                            };
+                            _sessionService.AddSessionHistory(sessionHistory);
                         }
                         var previousUser = card.User;
                         if (previousUser != null && previousUser.Session != null)
@@ -58,6 +69,7 @@ namespace MOFO.Controllers
                             previousUser.Session = null;
                         }
                         user.Session = _sessionService.GetSessionByRoom(room);
+                        _sessionService.AddUserToCurrentSessionHistory(user, room.Id);
                         room.Cards.Where(x => x.User != null && x.User.Id == user.Id).ToList().ForEach(y => y.User = null);
                         card.User = user;
                         _userService.Update();
@@ -124,15 +136,72 @@ namespace MOFO.Controllers
                     }
                     else if (usersCount <= 1 || user.Role == 0)
                     {
+                       
                         user.Session = null;
                         _userService.Update();
-                        _sessionService.RemoveSession(userSession);
+                        _sessionService.RemoveAllUsersFromSession(userSession);
+                        userSession.IsActive = false;
+                        _userService.Update();
+
+                        var filepath = Server.MapPath("~/Content/Files");
+                        BackgroundJob.Enqueue(() => ArchiveSession(userSession.Id, filepath));
                     }
                     return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
                 }
                 else return Json(new { status = "NO SESSION" }, JsonRequestBehavior.AllowGet);
             }
             else return Json(new { status = "WRONG AUTH" }, JsonRequestBehavior.AllowGet);
+        }
+        public void ArchiveSession(int sessionId, string filePath)
+        {
+            // Your Google Cloud Platform project ID.
+            string projectId = "mofo-app-264413";
+            var session = _sessionService.GetSessionById(sessionId);
+            if (session != null)
+            {
+                var sessionHistory = _sessionService.GetCurrentSessionHistoryByRoom(session.Room.Id);
+                if (sessionHistory != null)
+                {
+                    var credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(Path.Combine(filePath, @"..\..\App_Data\google-cloud.json"));
+                    // Instantiates a client.
+                    using (StorageClient storageClient = StorageClient.Create(credential))
+                    {
+                        // The name for the new bucket.
+                        string bucketName = projectId + "-sessionid-" + sessionHistory.Id;
+                        try
+                        {
+                            // Creates the new bucket.
+                            storageClient.CreateBucket(projectId, bucketName);
+                            var messages = session.Messages.ToList();
+                            for (int i = 0; i < messages.Count; i++)
+                            {
+                                sessionHistory.Messages.Add(messages[i]);
+                                if (messages[i].File != null)
+                                {
+                                    var objectName = messages[i].File.FileName;
+                                    using (var f = System.IO.File.OpenRead(Path.Combine(filePath, messages[i].File.FileName)))
+                                    {
+                                        storageClient.UploadObject(bucketName, objectName, null, f);
+                                    }
+                                    var objectPath = Path.Combine(filePath, objectName);
+                                    System.IO.File.Delete(objectPath);
+                                }
+                               
+                            }
+                            sessionHistory.FinishDateTime = DateTime.Now;
+                            _roomService.SaveChanges();
+                            _sessionService.RemoveSession(sessionId);
+
+
+                        }
+                        catch (Google.GoogleApiException e)
+                        when (e.Error.Code == 409)
+                        {
+                            // The bucket already exists.  That's fine.
+                        }
+                    }
+                }
+            }
         }
     }
 }

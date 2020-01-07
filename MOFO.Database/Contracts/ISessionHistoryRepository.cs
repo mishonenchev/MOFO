@@ -9,5 +9,6 @@ namespace MOFO.Database.Contracts
 {
     public interface ISessionHistoryRepository : IBaseRepository<SessionHistory>
     {
+        IEnumerable<SessionHistory> WhereIncludeAll(System.Linq.Expressions.Expression<Func<SessionHistory, bool>> where);
     }
 }

@@ -13,6 +13,11 @@ namespace MOFO.Services.Contracts
         Session GetSessionByRoom(Room room);
         void AddMessage(int type, string fileName, string downloadCode, string message, User user, DateTime dateTimeUploaded);
         void AddSession(Session session);
-        void RemoveSession(Session session);
+        void AddSessionHistory(SessionHistory sessionHistory);
+        void AddUserToCurrentSessionHistory(User user, int roomId);
+        void RemoveAllUsersFromSession(Session session);
+        Session GetSessionById(int id);
+        SessionHistory GetCurrentSessionHistoryByRoom(int roomId);
+        void RemoveSession(int sessionId);
     }
 }

@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace MOFO.Database.Contracts
 {
-    public interface ISessionRepository: IBaseRepository<Session>
+    public interface ISessionRepository : IBaseRepository<Session>
     {
+        IEnumerable<Session> WhereIncludeAll(System.Linq.Expressions.Expression<Func<Session, bool>> where);
     }
 }

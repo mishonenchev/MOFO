@@ -25,7 +25,7 @@ namespace MOFO.Models
         public bool IsActive { get; set; }
         public DateTime DateTimeLastActive { get; set; }
         public DateTime DateTimeRegistered { get; set; }
-        public IEnumerable<SessionHistory> SessionHistories { get; set; }
+        public ICollection<SessionHistory> SessionHistories { get; set; }
     }
 
     public enum UserRole

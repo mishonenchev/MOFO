@@ -48,7 +48,7 @@ namespace MOFO.Services
         }
         public IEnumerable<Message> GetMessagesByUserSession(Session session)
         {
-            return _messageRepository.WhereIncludeAll(x => x.User.Session.Id == session.Id).ToList();
+            return _messageRepository.WhereIncludeAll(x => x.Session.Id == session.Id).ToList();
         }
     }
 }

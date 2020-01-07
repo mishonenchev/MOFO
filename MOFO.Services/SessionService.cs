@@ -16,23 +16,25 @@ namespace MOFO.Services
         private readonly IUserRepository _userRepository; 
         private readonly IMessageService _messageService;
         private readonly IFileRepository _fileRepository;
+        private readonly ISessionHistoryRepository _sessionHistoryRepository;
         private readonly IMessageRepository _messageRepository;
-        public SessionService(ISessionRepository sessionRepository, IMessageService fileService, IUserRepository userRepository, IFileRepository fileRepository, IMessageRepository messageRepository)
+        public SessionService(ISessionRepository sessionRepository, IMessageService fileService, IUserRepository userRepository, IFileRepository fileRepository, IMessageRepository messageRepository, ISessionHistoryRepository sessionHistoryRepository)
         {
             _sessionRepository = sessionRepository;
             _messageService = fileService;
             _userRepository = userRepository;
             _fileRepository = fileRepository;
             _messageRepository = messageRepository;
+            _sessionHistoryRepository = sessionHistoryRepository;
 
         }
         public bool HasActiveSessionByRoom(Room room)
         {
-            return _sessionRepository.Where(x => x.Room.Id == room.Id).FirstOrDefault() != null;
+            return _sessionRepository.Where(x => x.Room.Id == room.Id&&x.IsActive).FirstOrDefault() != null;
         }
         public Session GetSessionByRoom(Room room)
         {
-            return _sessionRepository.Where(x => x.Room.Id == room.Id, x=>x.Room).FirstOrDefault();
+            return _sessionRepository.Where(x => x.Room.Id == room.Id&&x.IsActive, x=>x.Room).FirstOrDefault();
         }
         public void AddMessage(int type, string fileName, string downloadCode, string message, User user, DateTime dateTimeUploaded)
         {
@@ -67,23 +69,56 @@ namespace MOFO.Services
             _sessionRepository.Add(session);
             _sessionRepository.SaveChanges();
         }
-        public void RemoveSession(Session session)
+        public void AddSessionHistory(SessionHistory sessionHistory)
         {
-            foreach (var message in session.Messages.ToList())
+            _sessionHistoryRepository.Add(sessionHistory);
+            _sessionHistoryRepository.SaveChanges();
+        }
+        public void AddUserToCurrentSessionHistory(User user, int roomId)
+        {
+            var sessionHistory = _sessionHistoryRepository.WhereIncludeAll(x => x.Room.Id == roomId).Where(x => x.StartDateTime == x.FinishDateTime).OrderByDescending(x => x.StartDateTime).FirstOrDefault();
+
+            if (sessionHistory != null && user != null)
             {
-                _messageService.Remove(message);
+               if(!sessionHistory.Users.Any(x=>x.Id == user.Id))
+                {
+                    sessionHistory.Users.Add(user);
+                    _sessionHistoryRepository.SaveChanges();
+                }
+               
             }
+        }
+        public void RemoveSession(int sessionId)
+        {
+            var session = _sessionRepository.WhereIncludeAll(x => x.Id == sessionId).FirstOrDefault();
+            session.Messages = null;
             
             _sessionRepository.SaveChanges();
-            var users = _userRepository.Where(x => x.Session.Id == session.Id).ToList();
-            foreach (var item in users)
-            {
-                item.Session = null;
-            }
+            RemoveAllUsersFromSession(session);
 
-            _sessionRepository.SaveChanges();
+            
             _sessionRepository.Remove(session);
             _sessionRepository.SaveChanges();
+        }
+        public void RemoveAllUsersFromSession(Session session)
+        {
+            if (session != null)
+            {
+                var users = _userRepository.Where(x => x.Session.Id == session.Id).ToList();
+                foreach (var item in users)
+                {
+                    item.Session = null;
+                }
+                _sessionRepository.SaveChanges();
+            }
+        }
+        public Session GetSessionById(int id)
+        {
+            return _sessionRepository.WhereIncludeAll(x => x.Id == id).FirstOrDefault();
+        }
+        public SessionHistory GetCurrentSessionHistoryByRoom(int roomId)
+        {
+            return _sessionHistoryRepository.Where(x => x.Room.Id == roomId).Where(x => x.StartDateTime == x.FinishDateTime).FirstOrDefault();
         }
     }
 }

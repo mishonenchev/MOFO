@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System.Data.Entity;
 
 namespace MOFO.Database.Repositories
 {
@@ -12,6 +14,10 @@ namespace MOFO.Database.Repositories
     {
         public SessionHistoryRepository(IDatabase database) : base(database)
         {
+        }
+        public IEnumerable<SessionHistory> WhereIncludeAll(Expression<Func<SessionHistory, bool>> where)
+        {
+            return _dbSet.Where(where).Include(x => x.Messages.Select(y=>y.File)).Include(x=>x.Users).Include(x=>x.Room).ToList();
         }
     }
 }

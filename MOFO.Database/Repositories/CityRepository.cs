@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MOFO.Database
+namespace MOFO.Database.Repositories
 {
     public class CityRepository : BaseRepository<City>, ICityRepository
     {

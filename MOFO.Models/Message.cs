@@ -16,6 +16,7 @@ namespace MOFO.Models
         public DateTime DateTimeUploaded { get; set; }
         public User User { get; set; }
         public MessageType Type { get; set; }
+        public Session Session { get; set; }
     }
     public enum MessageType
     {

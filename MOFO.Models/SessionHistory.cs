@@ -12,14 +12,14 @@ namespace MOFO.Models
         public SessionHistory()
         {
             Users = new List<User>();
-            Files = new List<File>();
+            Messages = new List<Message>();
         }
         [Key]
         public int Id { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime FinishDateTime { get; set; }
-        public IEnumerable<User> Users { get; set; }
+        public ICollection<User> Users { get; set; }
         public Room Room { get; set; }
-        public IEnumerable<File> Files { get; set; }
+        public ICollection<Message> Messages { get; set; }
     }
 }

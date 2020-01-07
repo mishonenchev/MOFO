@@ -19,5 +19,6 @@ namespace MOFO.Models
         public Room Room { get; set; }
         public DateTime DateTimeCreated { get; set; }
         public DateTime DateTimeLastActive { get; set; }
+        public bool IsActive { get; set; }
     }
 }
