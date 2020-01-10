@@ -116,6 +116,10 @@ namespace MOFO.Services
         {
             return _sessionRepository.WhereIncludeAll(x => x.Id == id).FirstOrDefault();
         }
+        public SessionHistory GetSessionHistoryById(int id)
+        {
+            return _sessionHistoryRepository.WhereIncludeAll(x => x.Id == id).FirstOrDefault();
+        }
         public SessionHistory GetCurrentSessionHistoryByRoom(int roomId)
         {
             return _sessionHistoryRepository.Where(x => x.Room.Id == roomId).Where(x => x.StartDateTime == x.FinishDateTime).FirstOrDefault();

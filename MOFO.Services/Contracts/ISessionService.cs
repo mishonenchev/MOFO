@@ -19,5 +19,6 @@ namespace MOFO.Services.Contracts
         Session GetSessionById(int id);
         SessionHistory GetCurrentSessionHistoryByRoom(int roomId);
         void RemoveSession(int sessionId);
+        SessionHistory GetSessionHistoryById(int id);
     }
 }

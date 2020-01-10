@@ -5,6 +5,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.IO;
+using System.IO.Compression;
+using Google.Cloud.Storage.V1;
+using Google.Apis.Storage.v1.Data;
 
 namespace MOFO.Controllers
 {
@@ -88,6 +91,50 @@ namespace MOFO.Controllers
                 else return Json(new { status = "NO FILE" }, JsonRequestBehavior.AllowGet);
             }
             else return Json(new { status = "WRONG AUTH" }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetArchive(int sessionId)
+        {
+            var sessionHistory = _sessionService.GetSessionHistoryById(sessionId);
+            if (sessionHistory != null)
+            {
+                var messages = sessionHistory.Messages.ToList();
+                string projectId = "mofo-app-264413";
+                string bucketName = projectId + "-sessionid-" + sessionHistory.Id;
+                var filepath = Server.MapPath("~/Content");
+                var credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(Path.Combine(filepath, @"..\App_Data\google-cloud.json"));
+                // Instantiates a client.
+                using (StorageClient storageClient = StorageClient.Create(credential))
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                        {
+                            var users = messages.Select(x => x.User).Distinct().ToList();
+                            foreach (var user in users)
+                            {
+                                var userMessages = messages.Where(x => x.User.Id == user.Id).ToList();
+                                foreach (var message in userMessages)
+                                {
+                                    if (message.File != null)
+                                    {
+                                        var localFile = archive.CreateEntry(user.Name + "/" + message.File.FileName);
+
+                                        using (var entryStream = localFile.Open())
+                                        {
+                                            storageClient.DownloadObject(bucketName, message.File.FileName, entryStream);
+                                        }
+
+
+                                    }
+                                }
+                            }
+                        }
+                        var bytes = memoryStream.ToArray();
+                        return File(bytes, "application/zip", String.Format( "techip_download_{0}_{1}.zip", sessionHistory.StartDateTime.ToString("ddMMyyyyHHmm"), sessionHistory.FinishDateTime.ToString("ddMMyyyyHHmm")));
+                    }
+                }
+            }
+            return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);
         }
             
         private string DateTimeUploaded(DateTime time)

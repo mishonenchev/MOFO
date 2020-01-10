@@ -172,33 +172,31 @@ namespace MOFO.Controllers
                         {
                             // Creates the new bucket.
                             storageClient.CreateBucket(projectId, bucketName);
-                            var messages = session.Messages.ToList();
-                            for (int i = 0; i < messages.Count; i++)
-                            {
-                                sessionHistory.Messages.Add(messages[i]);
-                                if (messages[i].File != null)
-                                {
-                                    var objectName = messages[i].File.FileName;
-                                    using (var f = System.IO.File.OpenRead(Path.Combine(filePath, messages[i].File.FileName)))
-                                    {
-                                        storageClient.UploadObject(bucketName, objectName, null, f);
-                                    }
-                                    var objectPath = Path.Combine(filePath, objectName);
-                                    System.IO.File.Delete(objectPath);
-                                }
-                               
-                            }
-                            sessionHistory.FinishDateTime = DateTime.Now;
-                            _roomService.SaveChanges();
-                            _sessionService.RemoveSession(sessionId);
-
-
                         }
                         catch (Google.GoogleApiException e)
                         when (e.Error.Code == 409)
                         {
                             // The bucket already exists.  That's fine.
                         }
+                        var messages = session.Messages.ToList();
+                        for (int i = 0; i < messages.Count; i++)
+                        {
+                            sessionHistory.Messages.Add(messages[i]);
+                            if (messages[i].File != null)
+                            {
+                                var objectName = messages[i].File.FileName;
+                                using (var f = System.IO.File.OpenRead(Path.Combine(filePath, messages[i].File.FileName)))
+                                {
+                                    storageClient.UploadObject(bucketName, objectName, null, f);
+                                }
+                                var objectPath = Path.Combine(filePath, objectName);
+                                System.IO.File.Delete(objectPath);
+                            }
+
+                        }
+                        sessionHistory.FinishDateTime = DateTime.Now;
+                        _roomService.SaveChanges();
+                        _sessionService.RemoveSession(sessionId);
                     }
                 }
             }
