@@ -13,6 +13,7 @@ namespace MOFO.Models
         public int Id { get; set; }
         public string FileName { get; set; }
         public string DownloadCode { get; set; }
+        public string Size { get; set; }
         public DateTime DateTimeUploaded { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace MOFO.Services.Contracts
     {
         bool HasActiveSessionByRoom(Room room);
         Session GetSessionByRoom(Room room);
-        void AddMessage(int type, string fileName, string downloadCode, string message, User user, DateTime dateTimeUploaded);
+        void AddMessage(int type, string fileName, string downloadCode, string message, User user, DateTime dateTimeUploaded, string fileSize);
         void AddSession(Session session);
         void AddSessionHistory(SessionHistory sessionHistory);
         void AddUserToCurrentSessionHistory(User user, int roomId);
@@ -20,5 +20,6 @@ namespace MOFO.Services.Contracts
         SessionHistory GetCurrentSessionHistoryByRoom(int roomId);
         void RemoveSession(int sessionId);
         SessionHistory GetSessionHistoryById(int id);
+        void RemoveSessionHistory(SessionHistory sessionHistory);
     }
 }

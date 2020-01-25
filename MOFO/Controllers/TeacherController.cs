@@ -1,18 +1,26 @@
-﻿using System;
+﻿using MOFO.Services.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using System.IO;
 
 namespace MOFO.Controllers
 {
     [Authorize(Roles = "Teacher")]
     public class TeacherController : Controller
     {
-        // GET: Teacher
-        public ActionResult Index()
+        private readonly IUserService _userService;
+        private readonly IMessageService _messageService;
+        public TeacherController(IUserService userService, IMessageService messageService)
         {
-            return View();
+            _userService = userService;
+            _messageService = messageService;
         }
+        // GET: Teacher
+        
     }
+
 }

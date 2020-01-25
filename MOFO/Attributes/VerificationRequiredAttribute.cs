@@ -36,17 +36,6 @@ namespace MOFO.Attributes
                         }));
                     }
                 }
-                else
-                {
-                    if (!_teacherService.IsVerifiedByUserId(filterContext.RequestContext.HttpContext.User.Identity.GetUserId()))
-                    {
-                        filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new
-                        {
-                            controller = "Error",
-                            action = "verificationTeacher"
-                        }));
-                    }
-                }
                
 
                 base.OnActionExecuting(filterContext);

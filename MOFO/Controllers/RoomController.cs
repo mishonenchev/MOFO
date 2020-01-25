@@ -1,7 +1,6 @@
 ﻿using MOFO.Models;
 using MOFO.Services.Contracts;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Hangfire;
 using System.Web;
@@ -162,41 +161,57 @@ namespace MOFO.Controllers
                 var sessionHistory = _sessionService.GetCurrentSessionHistoryByRoom(session.Room.Id);
                 if (sessionHistory != null)
                 {
+                    if (session.Messages.Count > 0) { 
                     var credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(Path.Combine(filePath, @"..\..\App_Data\google-cloud.json"));
-                    // Instantiates a client.
-                    using (StorageClient storageClient = StorageClient.Create(credential))
-                    {
-                        // The name for the new bucket.
-                        string bucketName = projectId + "-sessionid-" + sessionHistory.Id;
-                        try
+                        // Instantiates a client.
+                        using (StorageClient storageClient = StorageClient.Create(credential))
                         {
-                            // Creates the new bucket.
-                            storageClient.CreateBucket(projectId, bucketName);
-                        }
-                        catch (Google.GoogleApiException e)
-                        when (e.Error.Code == 409)
-                        {
-                            // The bucket already exists.  That's fine.
-                        }
-                        var messages = session.Messages.ToList();
-                        for (int i = 0; i < messages.Count; i++)
-                        {
-                            sessionHistory.Messages.Add(messages[i]);
-                            if (messages[i].File != null)
+                            // The name for the new bucket.
+                            string bucketName = projectId + "-sessionid-" + sessionHistory.Id;
+                            try
                             {
-                                var objectName = messages[i].File.FileName;
-                                using (var f = System.IO.File.OpenRead(Path.Combine(filePath, messages[i].File.FileName)))
-                                {
-                                    storageClient.UploadObject(bucketName, objectName, null, f);
-                                }
-                                var objectPath = Path.Combine(filePath, objectName);
-                                System.IO.File.Delete(objectPath);
+                                // Creates the new bucket.
+                                storageClient.CreateBucket(projectId, bucketName);
                             }
+                            catch (Google.GoogleApiException e)
+                            when (e.Error.Code == 409)
+                            {
+                                // The bucket already exists.  That's fine.
+                            }
+                            var messages = session.Messages.ToList();
+                            for (int i = 0; i < messages.Count; i++)
+                            {
+                                sessionHistory.Messages.Add(messages[i]);
+                                if (messages[i].File != null)
+                                {
+                                    var objectName = messages[i].File.FileName;
+                                    try
+                                    {
+                                        using (var f = System.IO.File.OpenRead(Path.Combine(filePath, messages[i].File.FileName)))
+                                        {
+                                            storageClient.UploadObject(bucketName, objectName, null, f);
+                                        }
+                                        var objectPath = Path.Combine(filePath, objectName);
+                                        System.IO.File.Delete(objectPath);
+                                    }
+                                    catch (Exception)
+                                    {
+                                    }
 
+                                }
+
+                            }
+                            sessionHistory.FinishDateTime = DateTime.Now;
+                            _roomService.SaveChanges();
+                            _sessionService.RemoveSession(sessionId);
                         }
+                    }
+                    else
+                    {
                         sessionHistory.FinishDateTime = DateTime.Now;
                         _roomService.SaveChanges();
                         _sessionService.RemoveSession(sessionId);
+                        _sessionService.RemoveSessionHistory(sessionHistory);
                     }
                 }
             }

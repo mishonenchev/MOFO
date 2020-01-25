@@ -18,5 +18,7 @@ namespace MOFO.Services.Contracts
         bool IsTelephoneValid(string telephone);
         User GetUserByUserId(string userId);
         void SaveChanges();
+        List<User> GetUsersBySession(int sessionId);
+        List<SessionHistory> GetLastSessionHistoriesByUserId(int userId, int take = 0);
     }
 }

@@ -1,0 +1,104 @@
+﻿.feed-card {
+    background: white;
+    padding: 25px;
+    margin: 17px;
+}
+.feed-card-header{
+    margin: 15px 0;
+    padding: 10px 0;
+}
+.feed-card-header::after, .feed-card-file-attachment::after{
+    content: '';
+    clear:both;
+    display: block;
+}
+.feed-card-header .feed-card-name{
+    float: left;
+    font-weight: bold;
+
+}
+    .feed-card-header .feed-card-name i {
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+.feed-card-header .feed-card-timing{
+    float: right; 
+    color: #ccc;
+}
+.feed-card-image-preview img {
+    height: 285px;
+    object-fit: cover;
+    width:100%;
+}
+.feed-card-image-preview {
+    margin: 15px;
+    position: relative;
+    border: 2px solid #b9b9b9;
+}
+.black-background {
+    transition: 0.5s ease-out;
+    -o-transition: 0.5s ease-out;
+    -moz-transition: 0.5s ease-out;
+    -webkit-transition: 0.5s ease-out;
+}
+.feed-card-image-preview .black-background{
+    position: absolute; 
+    background: rgba(0,0,0,0.5);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    cursor: pointer;
+}
+    .feed-card-image-preview .black-background i {
+       
+        color: rgba(255,255,255, 0.7)
+
+    }
+.black-background i {
+    color: rgba(255,255,255, 0);
+    transition: 0.5s ease-out;
+    -o-transition: 0.5s ease-out;
+    -moz-transition: 0.5s ease-out;
+    -webkit-transition: 0.5s ease-out;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    position: absolute;
+    display: block;
+}
+
+.feed-card-main {
+    border: 2px solid #ccc;
+    padding: 15px 8px;
+    border-right: none;
+    border-left: none;
+}
+.feed-card-file-attachment {
+    background: #ebebeb;
+}
+    .feed-card-file-attachment .file-attachment-extension {
+        float: left;
+        height: 57px;
+        background: #afafaf;
+        padding: 15px 10px;
+        color: white;
+        text-transform: uppercase;
+    }
+.file-attachment-body {
+    padding: 7px;
+    color: #707070;
+    text-transform: uppercase;
+    float: left;
+}
+.file-attachment-download {
+    float: right;
+    margin: 15px 10px;
+}
+.file-attachment-download-btn {
+    background: #fff;
+    border: none;
+    padding: 3px 10px;
+    color: #989898;
+}

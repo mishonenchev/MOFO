@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "ActiveSession";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="p-3">
+                <div class="row">
+                    <div class="col-md-8">
+                        <input class="form-control" placeholder="Въведи описание ..." data-bind="value:message, valueUpdate: 'afterkeydown'" id="sendBtn" />
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <input class="inputfile" type="file" id="chooseFile"  />
+                            <label for="chooseFile" class="btn btn-secondary w-100" id="filelabel" style="overflow: hidden">Избери файл ...</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <button class="btn btn-success form-control" data-bind="disable: submitDisabled, click: uploadFile">Изпрати</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--ko foreach: messages-->
+        <div class="feed-card">
+            <div class="feed-card-header">
+                <div class="feed-card-name"><i class="fa fa-user"></i><span data-bind="text: username"></span></div>
+                <div class="feed-card-timing">преди <span data-bind="text: dateTimeUploaded"></span></div>
+            </div>
+            <div class="feed-card-main">
+                <div class="feed-card-description" data-bind="html: message">
+                </div>
+               <!--ko if: fileName!=undefined-->
+                <!--ko if: isImage == true-->
+                <div class="feed-card-image-preview">
+                    <img  data-bind="attr: { src: imageSrc}"/>
+                    <div class="black-background" data-bind="click: $root.downloadFile">
+                        <i class="fa fa-download"></i>
+                    </div>
+                </div>
+                <!--/ko-->
+                <!--ko if: isImage == false-->
+                <div class="feed-card-file-attachment">
+                    <div class="file-attachment-extension" data-bind="text: fileExtension">
+                    </div>
+                    <div class="file-attachment-body">
+                        <div class="file-attachment-name" data-bind="text: fileName">dasdjsadasas.jpg</div>
+                        <div class="file-attachment-size" data-bind="text: fileSize">25.75 Mb</div>
+                    </div>
+                    <div class="file-attachment-download">
+                        <button class="file-attachment-download-btn" data-bind="click: $root.downloadFile"> <i class="fa fa-download"></i></button>
+                    </div>
+
+                </div>
+                <!--/ko-->
+                <!--/ko-->
+            </div>
+        </div>
+        <!--/ko-->
+        @*<div class="card">
+            <table class="table table-responsive-sm table-hover table-outline mb-0 container-fluid" id="feedTable">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Потребител</th>
+                        <th class="text-center">Описание</th>
+                        <th>Файл</th>
+                        <th>Време на качване</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--ko foreach: messages-->
+                    <tr>
+                        <td>
+                            <div data-bind="text: username"></div>
+                        </td>
+                        <td class="text-center" data-bind="html: message">
+                        </td>
+                        <td>
+                            <!--ko if: hasFile==true-->
+                            <button class="btn" data-bind="click: $root.downloadFile"><i class="fa fa-download text-center"></i></button>
+                            <!--/ko-->
+                        </td>
+                        <td>
+                            <strong>Преди <span data-bind="text: dateTimeUploaded"></span></strong>
+                        </td>
+                    </tr>
+                    <!--/ko-->
+                </tbody>
+            </table>
+        </div>
+            *@
+    </div>
+</div>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+@section AddToScript{
+    @Scripts.Render("~/users/activeSession")
+}
+@section AddToHead{
+    <meta name="viewport" content="width=device-width, initial-scale=0.9">
+    <meta name="viewport" content="width=340, initial-scale=1">
+    @Styles.Render("~/css/feed-card")
+}

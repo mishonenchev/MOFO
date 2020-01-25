@@ -8,6 +8,7 @@ using System.IO;
 using System.IO.Compression;
 using Google.Cloud.Storage.V1;
 using Google.Apis.Storage.v1.Data;
+using Microsoft.AspNet.Identity;
 
 namespace MOFO.Controllers
 {
@@ -55,10 +56,12 @@ namespace MOFO.Controllers
                         var file = Request.Files[0];
                         if (file != null && file.ContentLength > 0)
                         {
+                            
                             var fileName = downloadCode + Path.GetExtension(file.FileName);
                             var path = Path.Combine(Server.MapPath("~/Content/Files"), fileName);
                             file.SaveAs(path);
-                            _sessionService.AddMessage(type, fileName, downloadCode, message, user, DateTime.Now);
+                            
+                            _sessionService.AddMessage(type, fileName, downloadCode, message, user, DateTime.Now, GetSizeString(file.ContentLength));
                             return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
                         }
                         else return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);
@@ -68,6 +71,44 @@ namespace MOFO.Controllers
                 else return Json(new { status = "NO FILES" }, JsonRequestBehavior.AllowGet);
             }
             else return Json(new { status = "WRONG AUTH" }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher, Student")]
+        public JsonResult FileUpload(string message)
+        {
+            var user = _userService.GetUserByUserId(User.Identity.GetUserId());
+            if (user != null)
+            {
+                if (Request.Files.Count > 0)
+                {
+                    if (user.Session != null)
+                    {
+                        var file = Request.Files[0];
+                        if (file != null && file.ContentLength > 0)
+                        {
+                            var downloadCode = _messageService.NewDownloadCode();
+                            var fileName = downloadCode + Path.GetExtension(file.FileName);
+                            var path = Path.Combine(Server.MapPath("~/Content/Files"), fileName);
+                            file.SaveAs(path);
+
+                            _sessionService.AddMessage(0, fileName, downloadCode, message, user, DateTime.Now, GetSizeString(file.ContentLength));
+                            return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
+                        }
+                        else return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else return Json(new { status = "NO SESSION" }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(message))
+                    {
+                        _sessionService.AddMessage(0, "", "", message, user, DateTime.Now, "0");
+                        return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+            }
+            return Json(new { status = "ERR" });
         }
         [HttpGet]
         public JsonResult DownloadFile(string auth, string downloadCode)
@@ -159,6 +200,22 @@ namespace MOFO.Controllers
             {
                 return String.Format("Few moments ago.");
             }
+        }
+        private string GetSizeString(int size )
+        {
+            string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+            double len = size;
+            int order = 0;
+            while (len >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                len = len / 1024;
+            }
+
+            // Adjust the format string to your preferences. For example "{0:0.#}{1}" would
+            // show a single decimal place, and no space.
+            string result = String.Format("{0:0.##} {1}", len, sizes[order]);
+            return result;
         }
     }
 }

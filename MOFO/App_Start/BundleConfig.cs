@@ -37,6 +37,10 @@ namespace MOFO
                  "~/Scripts/app/admin/schoolViewModel-{version}.js"));
             bundles.Add(new ScriptBundle("~/admins/cards").Include(
                  "~/Scripts/app/admin/cardsViewModel-{version}.js"));
+            bundles.Add(new ScriptBundle("~/users/index").Include(
+               "~/Scripts/app/user/indexViewModel-{version}.js"));
+            bundles.Add(new ScriptBundle("~/users/activeSession").Include(
+             "~/Scripts/app/user/activeSessionViewModel-{version}.js"));
             bundles.Add(new ScriptBundle("~/app/inputValidation").Include(
                      "~/Scripts/inputValidation.js"));
 
@@ -46,6 +50,8 @@ namespace MOFO
                      "~/Content/Admin.min.css"));
             bundles.Add(new StyleBundle("~/css/select2").Include(
                      "~/Content/select2.min.css"));
+            bundles.Add(new StyleBundle("~/css/feed-card").Include(
+                    "~/Content/feed-card-{version}.css"));
 
 
         }

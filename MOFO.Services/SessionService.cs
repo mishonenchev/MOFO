@@ -36,7 +36,7 @@ namespace MOFO.Services
         {
             return _sessionRepository.Where(x => x.Room.Id == room.Id&&x.IsActive, x=>x.Room).FirstOrDefault();
         }
-        public void AddMessage(int type, string fileName, string downloadCode, string message, User user, DateTime dateTimeUploaded)
+        public void AddMessage(int type, string fileName, string downloadCode, string message, User user, DateTime dateTimeUploaded, string fileSize)
         {
             var session = user.Session;
             var messageObj = new Message()
@@ -51,7 +51,8 @@ namespace MOFO.Services
                 {
                     DownloadCode = downloadCode,
                     DateTimeUploaded = dateTimeUploaded,
-                    FileName = fileName
+                    FileName = fileName,
+                     Size = fileSize
                 };
                 _fileRepository.Add(messageObj.File);
                 _fileRepository.SaveChanges();
@@ -72,6 +73,11 @@ namespace MOFO.Services
         public void AddSessionHistory(SessionHistory sessionHistory)
         {
             _sessionHistoryRepository.Add(sessionHistory);
+            _sessionHistoryRepository.SaveChanges();
+        }
+        public void RemoveSessionHistory(SessionHistory sessionHistory)
+        {
+            _sessionHistoryRepository.Remove(sessionHistory);
             _sessionHistoryRepository.SaveChanges();
         }
         public void AddUserToCurrentSessionHistory(User user, int roomId)

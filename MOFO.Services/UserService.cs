@@ -14,9 +14,11 @@ namespace MOFO.Services
     public class UserService: IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly ISessionHistoryRepository _sessionHistoryRepository;
+        public UserService(IUserRepository userRepository, ISessionHistoryRepository sessionHistoryRepository)
         {
             _userRepository = userRepository;
+            _sessionHistoryRepository = sessionHistoryRepository;
         }
         public void AddUser(User user)
         {
@@ -87,6 +89,19 @@ namespace MOFO.Services
         public User GetUserByUserId(string userId)
         {
             return _userRepository.WhereIncludeAll(x => x.AspUserId == userId).FirstOrDefault();
+        }
+
+        public List<User> GetUsersBySession(int sessionId)
+        {
+            return _userRepository.WhereIncludeAll(x => x.Session != null && x.Session.Id == sessionId).ToList();
+        }
+        public List<SessionHistory> GetLastSessionHistoriesByUserId(int userId, int take = 0)
+        {
+            if(take!=0)
+            return _sessionHistoryRepository.WhereIncludeAll(x => x.Users.Any(y => y.Id == userId)).OrderByDescending(x => x.FinishDateTime).Take(take).ToList();
+            else
+                return _sessionHistoryRepository.WhereIncludeAll(x => x.Users.Any(y => y.Id == userId)).OrderByDescending(x => x.FinishDateTime).ToList();
+
         }
         public void SaveChanges()
         {

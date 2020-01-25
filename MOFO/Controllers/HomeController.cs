@@ -27,11 +27,11 @@ namespace MOFO.Controllers
                     return RedirectToAction("Index", "Moderator");
                 }else if (User.IsInRole("Teacher"))
                 {
-                    return RedirectToAction("Index", "Teacher");
+                    return RedirectToAction("Index", "User");
                 }
                 else
                 {
-                    return RedirectToAction("Index", "Student");
+                    return RedirectToAction("Index", "User");
                 }
             }
             return View();

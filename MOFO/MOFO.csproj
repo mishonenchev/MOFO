@@ -243,6 +243,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\FeedHub.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -256,7 +257,10 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Admin.min.css" />
+    <Content Include="Content\feed-card-1.0.0.css" />
+    <Content Include="Content\kntvDa3Zf1pC.jpg" />
     <Content Include="Content\select2.min.css" />
+    <Content Include="Content\XvAlguYnXmGi.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -266,6 +270,8 @@
     <Content Include="Scripts\app\admin\cityViewModel.js" />
     <Content Include="Scripts\app\admin\schoolsViewModel-1.0.0.js" />
     <Content Include="Scripts\app\admin\schoolViewModel-1.0.0.js" />
+    <Content Include="Scripts\app\user\activeSessionViewModel-1.0.0.js" />
+    <Content Include="Scripts\app\user\indexViewModel-1.0.0.js" />
     <Content Include="Scripts\coreui.min.js" />
     <Content Include="Scripts\app\main\registerSchoolViewModel.js" />
     <Content Include="Scripts\app\main\registerStudentViewModel.js" />
@@ -331,16 +337,16 @@
     <Content Include="Views\Admin\School.cshtml" />
     <Content Include="Views\Admin\City.cshtml" />
     <Content Include="Views\Admin\Cards.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\ActiveSession.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Files\" />
-    <Folder Include="Hubs\" />
     <Folder Include="Views\File\" />
     <Folder Include="Views\Moderator\" />
     <Folder Include="Views\Room\" />
     <Folder Include="Views\Student\" />
     <Folder Include="Views\Teacher\" />
-    <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -410,6 +416,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
+      <UserProperties Reactor_Deploy="0" Reactor_Enabled="1" />
     </VisualStudio>
   </ProjectExtensions>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
