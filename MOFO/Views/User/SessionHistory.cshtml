@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "SessionHistory";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+    <div class="card bg-dark text-white" style="margin-bottom:0">
+        <div class="card-img-overlay" style="background: rgb(25, 188, 213);">
+            <h1 class="card-title">@ViewBag.RoomName</h1>
+
+            <div class="card-left">
+                <small>Дата:</small>
+                <h5><strong>@ViewBag.DateTime</strong></h5>
+            </div>
+            <div class="card-right">
+                <small>Брой потребители:</small>
+                <h5><strong>@ViewBag.UsersCount</strong></h5>
+            </div>
+        </div>
+    </div>

@@ -2,6 +2,8 @@
 function ActiveSessionViewModel() {
     var self = this;
     self.messages = ko.observableArray();
+    self.usersCount = ko.observable('-');
+    self.usersCountLong = ko.observable('потребители');
     var lastMessage = 0;
     var lastRequestDone = true;
     self.sync = function () {
@@ -28,15 +30,25 @@ function ActiveSessionViewModel() {
                                 lastMessage = data.messages[i].id;
                             }
                         }
+                        self.usersCount(data.usersCount);
+                        if (data.usersCount == 1) {
+                            self.usersCountLong("потребител");
+                        } else {
+                            self.usersCountLong("потребители");
+                        }
                         lastRequestDone = true;
 
                     } else if (data.status == "NO SESSION") {
                         window.location = "/";
+                        self.usersCount("-");
+                        self.usersCountLong("потребители");
                     }
                 },
                 error: function () {
                     alert("Няма връзка с интернет");
                     lastRequestDone = false;
+                    self.usersCount("-");
+                    self.usersCountLong("потребители");
                 }
             });
             lastRequestDone = false;
@@ -95,6 +107,9 @@ function ActiveSessionViewModel() {
                     alert(err.statusText);
                 }
             });
+    }
+    self.ShowActiveUsers = function () {
+        
     }
     self.hasFile = ko.observable(false);
     self.downloadFile = function (item) {

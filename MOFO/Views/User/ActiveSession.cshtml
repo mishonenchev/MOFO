@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "ActiveSession";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 <div class="row">
     <div class="col-12">
@@ -96,6 +96,12 @@
             *@
     </div>
 </div>
+<div class="right-corder-container">
+    <button class="right-corder-container-button" id="openActiveUsersModal" data-bind="click: $root.ShowActiveUsers">
+        <div class="short-text" data-bind="text: usersCount"></div>
+        <div class="long-text" data-bind="text: usersCountLong"></div>
+    </button>
+</div>
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
 {
     @Html.AntiForgeryToken()
@@ -103,6 +109,13 @@
 
 @section AddToScript{
     @Scripts.Render("~/users/activeSession")
+<script>
+     $(".right-corder-container-button").hover(function () {
+        $(".long-text").addClass("show-long-text");
+    }, function () {
+        $(".long-text").removeClass("show-long-text");
+        });
+    </script>
 }
 @section AddToHead{
     <meta name="viewport" content="width=device-width, initial-scale=0.9">

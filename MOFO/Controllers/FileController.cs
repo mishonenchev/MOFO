@@ -111,7 +111,7 @@ namespace MOFO.Controllers
             return Json(new { status = "ERR" });
         }
         [HttpGet]
-        public JsonResult DownloadFile(string auth, string downloadCode)
+        public ActionResult DownloadFile(string auth, string downloadCode)
         {
             var user = _userService.GetUserByAuth(auth);
             if (user != null)
@@ -119,15 +119,15 @@ namespace MOFO.Controllers
                 var message = _messageService.GetMessagesByUserSession(user.Session).Where(x=>x.File?.DownloadCode==downloadCode).FirstOrDefault();
                 if (message != null)
                 {
-                    //var fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/Files/") + file.FileName);
-                    //var extension = Path.GetExtension(file.FileName);
-                    //return File(fileBytes, MimeMapping.GetMimeMapping(file.FileName), " " + extension);
+                    var fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/Files/") + message.File.FileName);
+                    var extension = Path.GetExtension(message.File.FileName);
+                    return File(fileBytes, MimeMapping.GetMimeMapping(message.File.FileName), " " + extension);
 
-                    Response.ContentType = MimeMapping.GetMimeMapping(message.File.FileName);
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + message.File.FileName);
-                    Response.TransmitFile(Server.MapPath("~/Content/Files/" + message.File.FileName));
-                    Response.End();
-                    return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
+                    //Response.ContentType = MimeMapping.GetMimeMapping(message.File.FileName);
+                    //Response.AppendHeader("Content-Disposition", "attachment; filename=" + message.File.FileName);
+                    //Response.TransmitFile(Server.MapPath("~/Content/Files/" + message.File.FileName));
+                    //Response.End();
+                    //return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
                 }
                 else return Json(new { status = "NO FILE" }, JsonRequestBehavior.AllowGet);
             }

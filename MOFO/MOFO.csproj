@@ -339,6 +339,9 @@
     <Content Include="Views\Admin\Cards.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\ActiveSession.cshtml" />
+    <Content Include="Views\Shared\_UserLayout.cshtml" />
+    <Content Include="Views\User\SessionHistories.cshtml" />
+    <Content Include="Views\User\SessionHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Files\" />
@@ -416,7 +419,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties Reactor_Deploy="0" Reactor_Enabled="1" />
+      <UserProperties Reactor_Enabled="1" Reactor_Deploy="0" />
     </VisualStudio>
   </ProjectExtensions>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

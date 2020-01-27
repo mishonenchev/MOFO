@@ -62,6 +62,14 @@ namespace MOFO.Controllers
         {
             return View();
         }
+        public ActionResult SessionHistories()
+        {
+            return View();
+        }
+        public ActionResult SessionHistory(int id)
+        {
+            return View();
+        }
         public JsonResult GetIndexContent()
         {
             var user = _userService.GetUserByUserId(User.Identity.GetUserId());
@@ -95,8 +103,9 @@ namespace MOFO.Controllers
                     user.DateTimeLastActive = DateTime.Now;
                     user.IsActive = true;
                     _userService.Update();
+                    var usersCount = _userService.GetUsersBySession(user.Session.Id).Count;
 
-                    return Json(new { status = "OK", messages = messages.Select(x => new { id = x.Id, hasFile = x.File == null ? false : true, downloadCode = x.File?.DownloadCode, fileSize = x.File?.Size, fileName = x.File?.FileName, message = x.Text, username = x.User.Name, dateTimeUploaded = DateTimeUploaded(x.DateTimeUploaded) }) }, JsonRequestBehavior.AllowGet);
+                    return Json(new { status = "OK", usersCount, messages = messages.Select(x => new { id = x.Id, hasFile = x.File == null ? false : true, downloadCode = x.File?.DownloadCode, fileSize = x.File?.Size, fileName = x.File?.FileName, message = x.Text, username = x.User.Name, dateTimeUploaded = DateTimeUploaded(x.DateTimeUploaded) }) }, JsonRequestBehavior.AllowGet);
                 }
                 else return Json(new { status = "NO SESSION" }, JsonRequestBehavior.AllowGet);
             }
