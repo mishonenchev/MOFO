@@ -1,0 +1,122 @@
+﻿@model MOFO.Models.SettingsViewModel
+@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+@if (ViewBag.Mobile == true)
+{
+    <div class="row">
+        <div class="col-12">
+            @using (Html.BeginForm("LogOff", "Account", new { returnUrl = "/user/emptyResult" }, FormMethod.Post, new { id = "logoutForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <input class="btn btn-danger w-100 mb-2 mt-2" value="Изход от профила" type="submit" />
+            }
+        </div>
+    </div>
+}
+<div class="row">
+    <div class="col-md-8" style="margin: 0 auto">
+        <div class="card">
+            @using (Html.BeginForm("UpdateSettings", "User", new { Mobile = ViewBag.Mobile }, FormMethod.Post, new { role = "form", @onSubmit = "return vm.checkView()" }))
+            {
+                <div class="card-header">
+                    <strong>Настройки на акаунта</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+
+                        @Html.AntiForgeryToken()
+                        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                        {
+                            <div class="alert alert-danger w-100">@Model.ErrorMessage</div>
+                        }
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="name">Имена</label>
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", data_bind = "value: name, css: name.validClass,hasFocus: name.isFocused" })
+                                <div class="invalid-feedback" data-bind="visible: name.isInvalid, text: name.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="name">Имейл</label>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", data_bind = "value: email, css: email.validClass,hasFocus: email.isFocused" })
+                                <div class="invalid-feedback" data-bind="visible: email.isInvalid, text: email.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="name">Телефон</label>
+                                @Html.TextBoxFor(m => m.Telephone, new { @class = "form-control", data_bind = "value: telephone, css: telephone.validClass,hasFocus: telephone.isFocused" })
+                                <div class="invalid-feedback" data-bind="visible: telephone.isInvalid, text: telephone.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <span>Смяна на паролата</span>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="name">Стара парола</label>
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", data_bind = "value: password, css: password.validClass,hasFocus: password.isFocused" })
+                                <div class="invalid-feedback" data-bind="visible: password.isInvalid, text: password.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="name">Нова парола</label>
+                                @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control", data_bind = "value: newPassword, css: newPassword.validClass,hasFocus: newPassword.isFocused" })
+                                <div class="invalid-feedback" data-bind="visible: newPassword.isInvalid, text: newPassword.message">
+                                    Please provide a valid informations.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        @if (ViewBag.Mobile == true)
+                        {
+                            <div class="col-6 p-2">
+                                <button class="btn btn-secondary w-100" type="button" onclick="window.location = '/user/emptyResult'">Откажи промените</button>
+                            </div>
+                        }   
+                        else
+                        {
+                            <div class="col-6 p-2">
+                                <button class="btn btn-secondary w-100" type="button" onclick="window.location = '/user/settings'">Откажи промените</button>
+                            </div>
+                        }
+                        <div class="col-6 p-2">
+                            <button class="btn btn-success w-100" type="submit">Запази промените</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section AddToScript{
+    @Scripts.Render("~/users/settings")
+    <script>
+    (function () {
+         var model =@Html.Raw(Json.Encode(Model));
+    var vm = new SettingsViewModel(model);
+    vm.checkView();
+    ko.applyBindings(vm);
+
+    })()
+    </script>
+}

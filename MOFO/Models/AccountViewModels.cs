@@ -48,11 +48,11 @@ namespace MOFO.Models
 
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage ="Имейлът е задължително поле")]
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Паролата е задължително поле")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
         
@@ -124,6 +124,23 @@ namespace MOFO.Models
         [DataType(DataType.Text)]
         public string SchoolName { get; set; }
     }
+    public class SettingsViewModel
+    {
+        [Required]
+        [DataType(DataType.Text)]
+        public string Name { get; set; }
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+        [Required]
+        [DataType(DataType.PhoneNumber)]
+        public string Telephone { get; set; }
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+        [DataType(DataType.Password)]
+        public string NewPassword { get; set; }
+        public string ErrorMessage { get; set; }
+    }
     public class RegisterStudentViewModel
     {
         [Required]
@@ -146,22 +163,18 @@ namespace MOFO.Models
     public class ResetPasswordViewModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0} трябва да бъде поне {2} символа.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Новата Парола")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Повтори паролата")]
+        [Compare("Password", ErrorMessage = "Двете пароли не съвпадат.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
+        public string UserId { get; set; }
     }
 
     public class ForgotPasswordViewModel

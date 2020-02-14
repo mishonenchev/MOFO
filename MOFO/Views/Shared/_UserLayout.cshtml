@@ -14,13 +14,15 @@
     }
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
 </head>
-    <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden sidebar-lg-show">
-        <div class="loader-view">
-            <i class="loader fas fa-spinner"></i>
-        </div>
+<body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden sidebar-lg-show">
+    <div class="loader-view">
+        <i class="loader fas fa-spinner"></i>
+    </div>
+    @if (ViewBag.Mobile != true)
+    {
         <header class="app-header navbar">
             <button class="navbar-toggler mobile-sidebar-toggler d-lg-none mr-auto" data-toggle="sidebar-show" type="button">☰</button>
-            <a class="navbar-brand" href="@Url.Action("Index","Admin")">Администрация</a>
+            <a class="navbar-brand" href="@Url.Action("Index", "Admin")">Администрация</a>
             <ul class="nav navbar-nav ml-auto">
 
                 <li class="nav-item">
@@ -32,12 +34,12 @@
                         <div class="dropdown-header text-center">
                             <strong>Account</strong>
                         </div>
-                        <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i>Настройки</a>
+                        <a class="dropdown-item" href="@Url.Action("Settings", "User")"><i class="fa fa-wrench"></i>Настройки</a>
 
                         @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
                         {
                             @Html.AntiForgeryToken()
-                            <a href="javascript:document.getElementById('logoutForm').submit()" class="dropdown-item"><i class="zmdi zmdi-time-restore"></i> Излез</a>
+                            <a href="javascript:document.getElementById('logoutForm').submit()" class="dropdown-item"><i class="fa fa-sign-out-alt"></i> Излез</a>
                         }
 
                     </div>
@@ -45,62 +47,63 @@
             </ul>
 
         </header>
+    }
 
-        <div class="app-body">
-            <div class="sidebar">
-                <nav class="sidebar-nav">
-                    <ul class="nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Index","User")">Начало</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("SessionHistories","User")">Минали сесии</a>
-                        </li>
-                    </ul>
-                </nav>
-                <button class="sidebar-minimizer brand-minimizer" type="button"></button>
-            </div>
-
-            <!-- Main content -->
-            <main class="main">
-
-                @RenderBody()
-            </main>
+    <div class="app-body" style=" @(ViewBag.Mobile==true? "margin-top: 0":"")">
+        <div class="sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index","User")">Начало</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("SessionHistories","User")">Минали сесии</a>
+                    </li>
+                </ul>
+            </nav>
+            <button class="sidebar-minimizer brand-minimizer" type="button"></button>
         </div>
 
+        <!-- Main content -->
+        <main class="main">
 
-        @Scripts.Render("~/bundles/jquery")
-        @Scripts.Render("~/js/select2")
-        @Scripts.Render("~/scripts/admin")
-        @Scripts.Render("~/app/inputValidation")
+            @RenderBody()
+        </main>
+    </div>
 
-        @if (IsSectionDefined("AddToScript"))
-        {
-            @RenderSection("AddToScript", required: false)
-        }
-        @RenderSection("scripts", required: false)
-        <script>
-            $('[data-toggle="popover"]').popover();
-            $(".nav-dropdown-toggle").click(function () {
-                if ($(this).next().hasClass("show")) {
-                    $(this).next().removeClass("show");
-                } else {
-                    $(this).next().addClass("show");
-                }
-            });
-            $(".sidebar-toggler").click(function () {
-                if ($("body").hasClass("sidebar-hidden")) {
-                    $("body").removeClass("sidebar-hidden");
-                } else {
-                    $("body").addClass("sidebar-hidden");
-                }
-            });
-            $(".mobile-sidebar-toggler").click(function () {
-                $("body").toggleClass("sidebar-mobile-show");
-            });
 
-        </script>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/js/select2")
+    @Scripts.Render("~/scripts/admin")
+    @Scripts.Render("~/app/inputValidation")
 
+    @if (IsSectionDefined("AddToScript"))
+    {
+        @RenderSection("AddToScript", required: false)
+    }
+    @RenderSection("scripts", required: false)
+    <script>
+        $('[data-toggle="popover"]').popover();
+        $(".nav-dropdown-toggle").click(function () {
+            if ($(this).next().hasClass("show")) {
+                $(this).next().removeClass("show");
+            } else {
+                $(this).next().addClass("show");
+            }
+        });
+        $(".sidebar-toggler").click(function () {
+            if ($("body").hasClass("sidebar-hidden")) {
+                $("body").removeClass("sidebar-hidden");
+            } else {
+                $("body").addClass("sidebar-hidden");
+            }
+        });
+        $(".mobile-sidebar-toggler").click(function () {
+            $("body").toggleClass("sidebar-mobile-show");
+        });
+
+    </script>
+   
     </body>
 
 </html>

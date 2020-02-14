@@ -132,7 +132,7 @@
 
         .right-corder-container .right-corder-container-button:hover {
             transition: all 400ms cubic-bezier(.62,.1,.5,1);
-            width: 200px;
+            width: 225px;
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
         }

@@ -1,13 +1,49 @@
-﻿<!DOCTYPE html>
+﻿@using MOFO.Models
+@model ForgotPasswordViewModel
+@{
+    ViewBag.Title = "Възникна неочаквана грешка - Techip.bg";
+    Layout = "";
+}
+<!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Error</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/admin")
 </head>
-<body>
-    <hgroup>
-        <h1>Error.</h1>
-        <h2>An error occurred while processing your request.</h2>
-    </hgroup>
+<body class="app flex-row align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mx-4">
+                    <div class="card-body p-4">
+                        <center><h1>Грешка!</h1></center>
+                        <center><h5>Възникна грeшка при обработката на вашата заявка</h5></center>
+
+                    </div>
+                    <div class="card-footer p-4">
+                        <div class="row">
+                            <div class="col-12" style="text-align: center">
+                                <a class="btn btn-light" href="@Url.Action("Index", "Home")" type="button">
+                                    Обратно към началната страница?
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/js/select2")
+    @Scripts.Render("~/bundles/dashboard")
+    @Scripts.Render("~/app/inputValidation")
+    @Scripts.Render("~/main/registerSchool")
 </body>
 </html>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

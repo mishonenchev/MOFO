@@ -7,7 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using Google.Cloud.Storage.V1;
 using System.IO;
-
+using Microsoft.AspNet.Identity;
 namespace MOFO.Controllers
 {
     public class RoomController : Controller
@@ -151,10 +151,47 @@ namespace MOFO.Controllers
             }
             else return Json(new { status = "WRONG AUTH" }, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        [Authorize(Roles ="Teacher, Student")]
+        [ValidateAntiForgeryToken]
+        public JsonResult LogoutDesktop()
+        {
+            var user = _userService.GetUserByUserId(User.Identity.GetUserId());
+            if (user != null)
+            {
+                if (user.Session != null)
+                {
+                    var userSession = user.Session;
+                    var activeDesks = userSession.Room.Cards.Where(x => x.User != null);
+                    var usersCount = activeDesks.Where(x => x.User.Session.Id == userSession.Id).ToList().Count;
+                    if (usersCount > 1)
+                    {
+                        user.Session = null;
+                        _userService.Update();
+                    }
+                    else if (usersCount <= 1 || user.Role == 0)
+                    {
+
+                        user.Session = null;
+                        _userService.Update();
+                        _sessionService.RemoveAllUsersFromSession(userSession);
+                        userSession.IsActive = false;
+                        _userService.Update();
+
+                        var filepath = Server.MapPath("~/Content/Files");
+                        BackgroundJob.Enqueue(() => ArchiveSession(userSession.Id, filepath));
+                    }
+                    return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
+                }
+                else return Json(new { status = "NO SESSION" }, JsonRequestBehavior.AllowGet);
+            }
+            else return Json(new { status = "WRONG AUTH" }, JsonRequestBehavior.AllowGet);
+        }
+
         public void ArchiveSession(int sessionId, string filePath)
         {
             // Your Google Cloud Platform project ID.
-            string projectId = "mofo-app-264413";
+            string projectId = "techip";
             var session = _sessionService.GetSessionById(sessionId);
             if (session != null)
             {

@@ -232,6 +232,8 @@
     <Compile Include="Attributes\VerificationRequiredAttribute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\Contracts\IEmailController.cs" />
+    <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -246,6 +248,7 @@
     <Compile Include="Hubs\FeedHub.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\EmailViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -272,6 +275,7 @@
     <Content Include="Scripts\app\admin\schoolViewModel-1.0.0.js" />
     <Content Include="Scripts\app\user\activeSessionViewModel-1.0.0.js" />
     <Content Include="Scripts\app\user\indexViewModel-1.0.0.js" />
+    <Content Include="Scripts\app\user\settingsViewModel-1.0.0.js" />
     <Content Include="Scripts\coreui.min.js" />
     <Content Include="Scripts\app\main\registerSchoolViewModel.js" />
     <Content Include="Scripts\app\main\registerStudentViewModel.js" />
@@ -342,6 +346,8 @@
     <Content Include="Views\Shared\_UserLayout.cshtml" />
     <Content Include="Views\User\SessionHistories.cshtml" />
     <Content Include="Views\User\SessionHistory.cshtml" />
+    <Content Include="Views\User\Settings.cshtml" />
+    <Content Include="Views\Email\ForgotPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Files\" />
@@ -419,7 +425,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties Reactor_Enabled="1" Reactor_Deploy="0" />
+      <UserProperties Reactor_Deploy="0" Reactor_Enabled="1" />
     </VisualStudio>
   </ProjectExtensions>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

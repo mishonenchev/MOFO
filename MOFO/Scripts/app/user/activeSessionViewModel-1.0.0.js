@@ -4,6 +4,7 @@ function ActiveSessionViewModel() {
     self.messages = ko.observableArray();
     self.usersCount = ko.observable('-');
     self.usersCountLong = ko.observable('потребители');
+    self.users = ko.observableArray();
     var lastMessage = 0;
     var lastRequestDone = true;
     self.sync = function () {
@@ -109,8 +110,50 @@ function ActiveSessionViewModel() {
             });
     }
     self.ShowActiveUsers = function () {
-        
+        $.ajax({
+            type: "GET",
+            url: "/user/activeUsers",
+            dataType: "json",
+            success: function (data) {
+                if (data.status == "OK") {
+
+                    self.users(data.users);
+                    openModal("#activeUsersView");
+
+                } else {
+                    window.location = "/";
+                    self.usersCount("-");
+                    self.usersCountLong("потребители");
+                }
+            },
+            error: function () {
+                alert("Няма връзка с интернет");
+                lastRequestDone = false;
+                self.usersCount("-");
+                self.usersCountLong("потребители");
+            }
+        });
     }
+    self.ShowLeaveModal = function () {
+        openModal("#leaveRoomView");
+    }
+    self.leaveRoom = function () {
+        var form = $('#__AjaxAntiForgeryForm');
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/room/LogoutDesktop",
+                data: {
+                    __RequestVerificationToken: token
+                },
+                success: function (data) {
+                    if (data.status === "OK") {
+                        window.location = '/user/activeSession';
+                    }
+                }
+            });
+    };
     self.hasFile = ko.observable(false);
     self.downloadFile = function (item) {
         window.location = "/user/downloadfile?downloadCode=" + item.downloadCode;

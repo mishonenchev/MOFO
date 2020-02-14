@@ -8,6 +8,8 @@ namespace MOFO.App_Start
     using System.Web.Mvc;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     using MOFO.Attributes;
+    using MOFO.Controllers;
+    using MOFO.Controllers.Contracts;
     using MOFO.Database;
     using MOFO.Database.Contracts;
     using MOFO.Database.Repositories;
@@ -161,6 +163,10 @@ namespace MOFO.App_Start
               .Bind<IPdfBuilder>()
               .To<PdfBuilder>()
          .InRequestScope();
+            kernel
+             .Bind<IEmailController>()
+             .To<EmailController>()
+        .InRequestScope();
             kernel
          .BindFilter<VerificationRequiredAttribute>(FilterScope.Controller, 0);
         }        

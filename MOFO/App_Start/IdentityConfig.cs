@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -19,8 +21,62 @@ namespace MOFO
     {
         public Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            var email = new MailMessage();
+            email.To.Add(new MailAddress(message.Destination));  // replace with valid value 
+            email.Subject = message.Subject;
+            email.Body = message.Body;
+            email.IsBodyHtml = true;
+
+            using (var smtp = new SmtpClient())
+            {
+                var credential = new NetworkCredential
+                {
+                    UserName = "info@pingo.bg",  // replace with valid value
+                    Password = "psbm@rket95"  // replace with valid value
+                };
+
+                smtp.Credentials = credential;
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+                smtp.Send(email);
+                return Task.FromResult(0);
+
+            }
+
+        }
+        public Task SendAsync(IdentityMessage message, string alias, string name = "")
+        {
+            var email = new MailMessage();
+            if (!string.IsNullOrEmpty(name))
+            {
+                email.From = new MailAddress(alias, name);
+            }
+            else
+            {
+                email.From = new MailAddress(alias);
+            }
+            email.To.Add(new MailAddress(message.Destination));  // replace with valid value 
+            email.Subject = message.Subject;
+            email.Body = message.Body;
+            email.IsBodyHtml = true;
+
+            using (var smtp = new SmtpClient())
+            {
+                var credential = new NetworkCredential
+                {
+                    UserName = "techip@akvarel.net",  // replace with valid value
+                    Password = "tepass2020"  // replace with valid value
+                };
+
+                smtp.Credentials = credential;
+                smtp.Host = "mail.akvarel.net";
+                smtp.Port = 25;
+                smtp.EnableSsl = false;
+                smtp.Send(email);
+                return Task.FromResult(0);
+
+            }
         }
     }
 

@@ -8,18 +8,45 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using System.IO;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace MOFO.Controllers
 {
     [Authorize (Roles ="Teacher, Student")]
     public class UserController : Controller
     {
+
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
         private readonly IUserService _userService;
         private readonly IMessageService _messageService;
         public UserController(IUserService userService, IMessageService messageService)
         {
             _userService = userService;
             _messageService = messageService;
+        }
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
         }
         [HttpPost]
         [AllowAnonymous]
@@ -70,6 +97,105 @@ namespace MOFO.Controllers
         {
             return View();
         }
+
+        public ActionResult Settings(SettingsViewModel viewModel = null, bool mobile = false)
+        {
+            var user = _userService.GetUserByUserId(User.Identity.GetUserId());
+            ViewBag.Mobile = mobile;
+            if (user != null) {
+                var vm = new SettingsViewModel();
+                if (!ModelState.IsValid)
+                {
+
+                    vm.Email = user.Email;
+                        vm.Name = user.Name;
+                    vm.Telephone = user.Telephone;
+                   
+                }
+                else
+                {
+                    vm = viewModel;
+                }
+                return View(vm);
+            }
+            return RedirectToAction("Login", "Account");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateSettings(SettingsViewModel settingsViewModel, bool Mobile = false)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _userService.GetUserByUserId(User.Identity.GetUserId());
+                if (user != null)
+                {
+                    user.Name = settingsViewModel.Name;
+                    user.Telephone = settingsViewModel.Telephone;
+
+                    var identity = UserManager.FindById(user.AspUserId);
+                    if (user.Email != settingsViewModel.Email)
+                    {
+                        identity.UserName = settingsViewModel.Email;
+                        identity.Email = settingsViewModel.Email;
+                        user.Email = settingsViewModel.Email;
+                        // Persiste the changes
+                        UserManager.Update(identity);
+
+                    }
+                    _userService.Update();
+                    if(!string.IsNullOrEmpty(settingsViewModel.Password))
+                    {
+                        if (settingsViewModel.Password != settingsViewModel.NewPassword)
+                        {
+                            if (UserManager.CheckPassword(identity, settingsViewModel.Password))
+                            {
+                                var result = UserManager.ChangePassword(User.Identity.GetUserId(), settingsViewModel.Password, settingsViewModel.NewPassword);
+                                if (result.Succeeded)
+                                {
+                                    if (Mobile)
+                                        return RedirectToAction("EmptyResult");
+                                    else
+                                        return RedirectToAction("Settings");
+                                }
+                                else
+                                {
+                                    settingsViewModel.Password = "";
+                                    settingsViewModel.NewPassword = "";
+                                    settingsViewModel.ErrorMessage = "Грешка при смяната на паролата!";
+                                    var obj = new { settingsViewModel.Email, settingsViewModel.Telephone, settingsViewModel.Name, Mobile, settingsViewModel.ErrorMessage };
+                                    return RedirectToAction("Settings", "User", obj);
+                                }
+                            }
+                            else
+                            {
+
+                                settingsViewModel.Password = "";
+                                settingsViewModel.NewPassword = "";
+                                settingsViewModel.ErrorMessage = "Неправилна парола!";
+                                var obj = new { settingsViewModel.Email, settingsViewModel.Telephone, settingsViewModel.Name, Mobile, settingsViewModel.ErrorMessage };
+                                return RedirectToAction("Settings", "User", obj );
+                            }
+                        }
+                        else
+                        {
+
+                            settingsViewModel.Password = "";
+                            settingsViewModel.NewPassword = "";
+                            settingsViewModel.ErrorMessage = "Двете пароли са едни и същи!";
+                            var obj = new { settingsViewModel.Email, settingsViewModel.Telephone, settingsViewModel.Name, Mobile, settingsViewModel.ErrorMessage };
+                            return RedirectToAction("Settings", "User", obj);
+                        }
+                    }
+                    if (Mobile)
+                        return RedirectToAction("EmptyResult");
+                    else
+                        return RedirectToAction("Settings");
+                }
+            }
+            settingsViewModel.ErrorMessage = "Грешка при записа на промените!";
+            return RedirectToAction("Settings", "User", new { settingsViewModel, Mobile });
+        }
+
         public JsonResult GetIndexContent()
         {
             var user = _userService.GetUserByUserId(User.Identity.GetUserId());
@@ -111,6 +237,28 @@ namespace MOFO.Controllers
             }
             else return Json(new { status = "WRONG AUTH" }, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult ActiveUsers()
+        {
+            var user = _userService.GetUserByUserId(User.Identity.GetUserId());
+            if (user != null)
+            {
+                if (user.Session != null)
+                {
+                    var allUsers = _userService.GetAll().Where(x => x.Session != null && x.Session.Id == user.Session.Id).ToList();
+                    foreach (var _user in allUsers)
+                    {
+                        if (_user.DateTimeLastActive < DateTime.Now.AddMinutes(-5))
+                        {
+                            _user.IsActive = false;
+                        }
+                    }
+                    _userService.Update();
+                    return Json(new { status = "OK", users = allUsers.Select(x => new { userName = x.Name, role = x.Role }) }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new { status = "NO SESSION" }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);
+        }
         [HttpGet]
         public ActionResult DownloadFile(string downloadCode)
         {
@@ -126,6 +274,10 @@ namespace MOFO.Controllers
 
                 }
             }
+            return new EmptyResult();
+        }
+        public ActionResult EmptyResult()
+        {
             return new EmptyResult();
         }
         private string DateTimeUploaded(DateTime time)

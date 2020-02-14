@@ -16,6 +16,8 @@ using Microsoft.AspNet.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MOFO.Controllers.Contracts;
+using MOFO.Controllers;
 
 [assembly: OwinStartupAttribute(typeof(MOFO.Startup))]
 namespace MOFO
@@ -82,6 +84,11 @@ namespace MOFO
          .Bind<ICityRepository>()
          .To<CityRepository>()
        .InBackgroundJobScope();
+
+            kernel
+             .Bind<IEmailController>()
+             .To<EmailController>()
+        .InRequestScope();
             kernel
                 .Bind<IUserService>()
                 .To<UserService>()

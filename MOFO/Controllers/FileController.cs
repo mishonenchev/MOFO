@@ -68,7 +68,25 @@ namespace MOFO.Controllers
                     }
                     else return Json(new { status = "NO SESSION" }, JsonRequestBehavior.AllowGet);
                 }
-                else return Json(new { status = "NO FILES" }, JsonRequestBehavior.AllowGet);
+                else
+                {
+                    if (user.Session != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(message))
+                        {
+                            _sessionService.AddMessage(0, "", "", message, user, DateTime.Now, "0");
+                            return Json(new { status = "OK" }, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { status = "NO SESSION" }, JsonRequestBehavior.AllowGet);
+                    }
+                }
             }
             else return Json(new { status = "WRONG AUTH" }, JsonRequestBehavior.AllowGet);
         }
@@ -139,7 +157,7 @@ namespace MOFO.Controllers
             if (sessionHistory != null)
             {
                 var messages = sessionHistory.Messages.ToList();
-                string projectId = "mofo-app-264413";
+                string projectId = "techip";
                 string bucketName = projectId + "-sessionid-" + sessionHistory.Id;
                 var filepath = Server.MapPath("~/Content");
                 var credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(Path.Combine(filepath, @"..\App_Data\google-cloud.json"));

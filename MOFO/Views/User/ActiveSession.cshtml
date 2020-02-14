@@ -13,7 +13,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <input class="inputfile" type="file" id="chooseFile"  />
+                            <input class="inputfile" type="file" id="chooseFile" />
                             <label for="chooseFile" class="btn btn-secondary w-100" id="filelabel" style="overflow: hidden">Избери файл ...</label>
                         </div>
                     </div>
@@ -26,6 +26,7 @@
                 </div>
             </div>
         </div>
+
         <!--ko foreach: messages-->
         <div class="feed-card">
             <div class="feed-card-header">
@@ -35,10 +36,10 @@
             <div class="feed-card-main">
                 <div class="feed-card-description" data-bind="html: message">
                 </div>
-               <!--ko if: fileName!=undefined-->
+                <!--ko if: fileName!=undefined-->
                 <!--ko if: isImage == true-->
                 <div class="feed-card-image-preview">
-                    <img  data-bind="attr: { src: imageSrc}"/>
+                    <img data-bind="attr: { src: imageSrc}" />
                     <div class="black-background" data-bind="click: $root.downloadFile">
                         <i class="fa fa-download"></i>
                     </div>
@@ -63,45 +64,109 @@
         </div>
         <!--/ko-->
         @*<div class="card">
-            <table class="table table-responsive-sm table-hover table-outline mb-0 container-fluid" id="feedTable">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Потребител</th>
-                        <th class="text-center">Описание</th>
-                        <th>Файл</th>
-                        <th>Време на качване</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!--ko foreach: messages-->
-                    <tr>
-                        <td>
-                            <div data-bind="text: username"></div>
-                        </td>
-                        <td class="text-center" data-bind="html: message">
-                        </td>
-                        <td>
-                            <!--ko if: hasFile==true-->
-                            <button class="btn" data-bind="click: $root.downloadFile"><i class="fa fa-download text-center"></i></button>
-                            <!--/ko-->
-                        </td>
-                        <td>
-                            <strong>Преди <span data-bind="text: dateTimeUploaded"></span></strong>
-                        </td>
-                    </tr>
-                    <!--/ko-->
-                </tbody>
-            </table>
-        </div>
-            *@
+                <table class="table table-responsive-sm table-hover table-outline mb-0 container-fluid" id="feedTable">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Потребител</th>
+                            <th class="text-center">Описание</th>
+                            <th>Файл</th>
+                            <th>Време на качване</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--ko foreach: messages-->
+                        <tr>
+                            <td>
+                                <div data-bind="text: username"></div>
+                            </td>
+                            <td class="text-center" data-bind="html: message">
+                            </td>
+                            <td>
+                                <!--ko if: hasFile==true-->
+                                <button class="btn" data-bind="click: $root.downloadFile"><i class="fa fa-download text-center"></i></button>
+                                <!--/ko-->
+                            </td>
+                            <td>
+                                <strong>Преди <span data-bind="text: dateTimeUploaded"></span></strong>
+                            </td>
+                        </tr>
+                        <!--/ko-->
+                    </tbody>
+                </table>
+            </div>
+        *@
     </div>
 </div>
+<!--ko if: messages().length ==0-->
+<div class="app flex-row align-items-center" style="height: 350px; min-height: unset">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5><strong>Няма качени файлове.</strong> </h5><p>Можете да качите първия файл или съобщение от менюто по-горе.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ko-->
 <div class="right-corder-container">
     <button class="right-corder-container-button" id="openActiveUsersModal" data-bind="click: $root.ShowActiveUsers">
         <div class="short-text" data-bind="text: usersCount"></div>
         <div class="long-text" data-bind="text: usersCountLong"></div>
     </button>
 </div>
+<div class="right-corder-container" style="bottom: 100px">
+    <button class="right-corder-container-button" id="openActiveUsersModal" data-bind="click: $root.ShowLeaveModal" style="background-color: #ff4545;">
+        <div class="short-text"><i class="fa fa-times"></i></div>
+        <div class="long-text">Напусни сесия</div>
+    </button>
+</div>
+<div class="modal fade modal-success" id="activeUsersView">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">Активни потребители</div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Име на потребителя</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--ko foreach: users-->
+                        <tr>
+                            <td data-bind="text: userName"></td>
+                        </tr>
+                        <!--/ko-->
+                    </tbody>
+                </table>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('#activeUsersView')">Затвори</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade modal-danger" id="leaveRoomView">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">Напускане на сесия</div>
+            <div class="modal-body">
+                <b><p>Наистина ли желаете да напуснете тази сесия?</p></b>
+                <p>Можете отново да си присъедините към нея като сканирате отново вашата карта, стига тя да е още активна. </p>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('#leaveRoomView')">Затвори</button>
+                    <button type="button" class="btn btn-danger" data-bind="click: leaveRoom">Напускане</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
 {
     @Html.AntiForgeryToken()
@@ -109,11 +174,11 @@
 
 @section AddToScript{
     @Scripts.Render("~/users/activeSession")
-<script>
-     $(".right-corder-container-button").hover(function () {
-        $(".long-text").addClass("show-long-text");
-    }, function () {
-        $(".long-text").removeClass("show-long-text");
+    <script>
+        $(".right-corder-container-button").hover(function () {
+            $(this).children(".long-text").addClass("show-long-text");
+        }, function () {
+            $(this).children(".long-text").removeClass("show-long-text");
         });
     </script>
 }

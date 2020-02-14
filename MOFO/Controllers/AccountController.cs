@@ -6,9 +6,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Hangfire;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using MOFO.Controllers.Contracts;
 using MOFO.Models;
 using MOFO.Services.Contracts;
 
@@ -24,14 +26,16 @@ namespace MOFO.Controllers
         private readonly ITeacherService _teacherService;
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
+        private readonly IEmailController _emailController;
 
-        public AccountController(IUserService userService, IModeratorService moderatorService, ISchoolService schoolService, ITeacherService teacherService, IStudentService studentService)
+        public AccountController(IUserService userService, IModeratorService moderatorService, ISchoolService schoolService, ITeacherService teacherService, IStudentService studentService, IEmailController emailController)
         {
             _userService = userService;
             _moderatorService = moderatorService;
             _schoolService = schoolService;
             _teacherService = teacherService;
             _studentService = studentService;
+            _emailController = emailController;
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -67,16 +71,21 @@ namespace MOFO.Controllers
         [AllowAnonymous]
         public JsonResult GetAuthKey()
         {
-            var user = _userService.GetUserByUserId(User.Identity.GetUserId());
-            if (user != null)
+            var userid = User.Identity.GetUserId();
+            if (userid != null)
             {
-                if (user.Auth == null)
+                var user = _userService.GetUserByUserId(User.Identity.GetUserId());
+                var cookies = Request.Cookies;
+                if (user != null)
                 {
-                    user.Auth = _userService.NewAuthString();
-                }
-                _userService.SaveChanges();
-                return Json(new { status = "OK", auth = user.Auth }, JsonRequestBehavior.AllowGet);
+                    if (user.Auth == null)
+                    {
+                        user.Auth = _userService.NewAuthString();
+                    }
+                    _userService.SaveChanges();
+                    return Json(new { status = "OK", auth = user.Auth }, JsonRequestBehavior.AllowGet);
 
+                }
             }
 
             return Json(new { status = "ERR" }, JsonRequestBehavior.AllowGet);
@@ -102,13 +111,13 @@ namespace MOFO.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, bool authget=false)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl=null, bool authget=false)
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.AuthGet = authget;
                 return View(model);
             }
-
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
@@ -127,7 +136,8 @@ namespace MOFO.Controllers
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
+                    ModelState.AddModelError("", "Невалидни имейл или парола.");
+                    ViewBag.AuthGet = authget;
                     return View(model);
             }
         }
@@ -251,6 +261,7 @@ namespace MOFO.Controllers
             }
 
             // If we got this far, something failed, redisplay form
+            ViewBag.AuthGet = authget;
             return View(model);
         }
 
@@ -313,6 +324,7 @@ namespace MOFO.Controllers
             }
 
             // If we got this far, something failed, redisplay form
+            ViewBag.AuthGet = authget;
             return View(model);
         }
 
@@ -467,6 +479,14 @@ namespace MOFO.Controllers
         public JsonResult EmailValidation(string email)
         {
             var user = UserManager.FindByEmail(email);
+            var currentUser = _userService.GetUserByUserId(User.Identity.GetUserId());
+            if (currentUser != null)
+            {
+                if(currentUser.Email == email)
+                {
+                    return Json(new { status = "OK", isValid = true }, JsonRequestBehavior.AllowGet);
+                }
+            }
             if (user != null)
             {
                 return Json(new { status = "OK", isValid = false }, JsonRequestBehavior.AllowGet);
@@ -514,10 +534,25 @@ namespace MOFO.Controllers
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                if (user == null)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
-                    return View("ForgotPasswordConfirmation");
+                    ViewBag.ErrorMessage = "Несъществува потребител с такъв имейл.";
+                }
+                else
+                {
+                    var name = "";
+                    var userobj = _userService.GetUserByUserId(user.Id);
+                    if (userobj != null)
+                    {
+                        name = userobj.Name;
+                    }
+                    string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code, email = user.Email, utm_source = "resetPassword", utm_medium = "email", utm_campaign = "essentials" }, protocol: Request.Url.Scheme);
+
+                    BackgroundJob.Enqueue(() => _emailController.ForgotPasswordEmail(user, new Models.Emails.ForgotPasswordViewModel() { Callback = callbackUrl, Name = name }));
+
+                    return RedirectToAction("ForgotPasswordConfirmation", "Account");
                 }
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -529,6 +564,7 @@ namespace MOFO.Controllers
             }
 
             // If we got this far, something failed, redisplay form
+            ViewBag.ErrorMessage = "Невалиден имейл";
             return View(model);
         }
 
@@ -543,7 +579,7 @@ namespace MOFO.Controllers
         //
         // GET: /Account/ResetPassword
         [AllowAnonymous]
-        public ActionResult ResetPassword(string code)
+        public ActionResult ResetPassword(string code, string userId)
         {
             return code == null ? View("Error") : View();
         }
@@ -555,23 +591,33 @@ namespace MOFO.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(model.Password))
             {
+                AddError("Паролата е задължително поле!");
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            if (model.Password.Length<6)
+            {
+                AddError("Паролата трябва да е поне 6 символа!");
+                return View(model);
+            }
+            var user = await UserManager.FindByIdAsync(model.UserId);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
+            
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
-            AddErrors(result);
-            return View();
+            else
+            {
+                AddError("Възникна грешка при промяната на паролата!");
+            }
+            return View(model);
         }
 
         //
@@ -700,9 +746,13 @@ namespace MOFO.Controllers
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LogOff()
+        public ActionResult LogOff(string returnUrl=null)
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            if (returnUrl != null)
+            {
+                return RedirectToLocal(returnUrl);
+            }
             return RedirectToAction("Index", "Home");
         }
 
@@ -752,6 +802,11 @@ namespace MOFO.Controllers
             {
                 ModelState.AddModelError("", error);
             }
+        }
+        public void AddError(string error)
+        {
+                ModelState.Clear();
+            ModelState.AddModelError("", error);
         }
 
         private ActionResult RedirectToLocal(string returnUrl)

@@ -39,31 +39,34 @@ namespace MOFO.Services
         public void AddMessage(int type, string fileName, string downloadCode, string message, User user, DateTime dateTimeUploaded, string fileSize)
         {
             var session = user.Session;
-            var messageObj = new Message()
+            if (session != null)
             {
-                Text = message,
-                User = user,
-                DateTimeUploaded = dateTimeUploaded
-            };
-            if (!string.IsNullOrEmpty(fileName))
-            {
-                messageObj.File = new File()
+                var messageObj = new Message()
                 {
-                    DownloadCode = downloadCode,
-                    DateTimeUploaded = dateTimeUploaded,
-                    FileName = fileName,
-                     Size = fileSize
+                    Text = message,
+                    User = user,
+                    DateTimeUploaded = dateTimeUploaded
                 };
-                _fileRepository.Add(messageObj.File);
-                _fileRepository.SaveChanges();
+                if (!string.IsNullOrEmpty(fileName))
+                {
+                    messageObj.File = new File()
+                    {
+                        DownloadCode = downloadCode,
+                        DateTimeUploaded = dateTimeUploaded,
+                        FileName = fileName,
+                        Size = fileSize
+                    };
+                    _fileRepository.Add(messageObj.File);
+                    _fileRepository.SaveChanges();
+                }
+                _messageRepository.Add(messageObj);
+                _sessionRepository.SaveChanges();
+                if (session.Messages != null)
+                {
+                    session.Messages.Add(messageObj);
+                }
+                _sessionRepository.SaveChanges();
             }
-            _messageRepository.Add(messageObj);
-            _sessionRepository.SaveChanges();
-            if (session.Messages != null)
-            {
-                session.Messages.Add(messageObj);
-            }
-            _sessionRepository.SaveChanges();
         }
         public void AddSession(Session session)
         {
